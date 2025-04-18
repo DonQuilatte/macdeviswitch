@@ -8,6 +8,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     // UI Components
     private var statusBarController: StatusBarController!
+    private var preferencesWindow: PreferencesWindow?
     
     // MacDeviSwitchKit Components
     private var preferenceManager: PreferenceManaging!
@@ -33,6 +34,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         // Configure application menu
         configureApplicationMenu()
+        
+        // Hide the dock icon
+        NSApp.setActivationPolicy(.accessory)
         
         // Start all monitoring components
         startMonitoring()
@@ -99,6 +103,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             preferenceManager: preferenceManager,
             switchController: switchController as? SwitchController
         )
+        
+        // Initialize PreferencesWindow
+        preferencesWindow = PreferencesWindow(
+            audioDeviceMonitor: audioDeviceMonitor,
+            preferenceManager: preferenceManager
+        )
     }
     
     /// Configures the application menu to remove standard items
@@ -120,6 +130,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     let action = item.action
                     return action == #selector(NSApplication.orderFrontStandardAboutPanel(_:)) ||
                            action == #selector(NSApplication.terminate(_:)) ||
+                           action == #selector(AppDelegate.openPreferences(_:)) ||
                            item.isSeparatorItem
                 }
                 
@@ -132,6 +143,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 
                 appMenu.addItem(NSMenuItem.separator())
                 
+                // Add Preferences item
+                if let preferencesItem = itemsToKeep.first(where: { $0.action == #selector(AppDelegate.openPreferences(_:)) }) {
+                    appMenu.addItem(preferencesItem)
+                }
+                
+                appMenu.addItem(NSMenuItem.separator())
+                
                 // Add Quit item
                 if let quitItem = itemsToKeep.first(where: { $0.action == #selector(NSApplication.terminate(_:)) }) {
                     appMenu.addItem(quitItem)
@@ -140,6 +158,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         
         logger.info("Application menu configured")
+    }
+    
+    /// Opens the preferences window
+    @IBAction func openPreferences(_ sender: Any) {
+        logger.info("Opening preferences window from application menu")
+        preferencesWindow?.showWindow(sender)
+        NSApp.activate(ignoringOtherApps: true)
     }
     
     /// Starts all monitoring components
