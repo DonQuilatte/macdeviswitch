@@ -1,0 +1,6 @@
+{
+"name": "MyApp Container",
+"build": { "dockerfile": "../docker/Dockerfile" },
+"workspaceFolder": "/workspace/src",
+"extensions": [ "ms-azuretools.vscode-docker" ]
+}
