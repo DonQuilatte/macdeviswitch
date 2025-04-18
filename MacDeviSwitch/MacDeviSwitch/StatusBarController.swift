@@ -1,33 +1,41 @@
 import AppKit
-import SwiftUI // Using SwiftUI for menu content eventually?
+import SwiftUI
 import os.log
-import MacDeviSwitchKit // Import the framework
+import MacDeviSwitchKit
 
 class StatusBarController {
     private var statusItem: NSStatusItem!
-    private let logger = Logger(subsystem: "com.yourcompany.macdeviswitch", category: "StatusBarController") // Replace
+    private let logger = Logger(subsystem: "com.yourcompany.macdeviswitch", category: "StatusBarController")
 
     // Dependencies (passed from AppDelegate)
     private let audioDeviceMonitor: AudioDeviceMonitoring
     private var preferenceManager: PreferenceManaging
-    // May need SwitchController later for status updates or manual actions
-
-    // Keep track of device menu items to update checkmarks
+    private var switchController: SwitchController?
+    
+    // UI Components
     private var deviceMenuItems: [NSMenuItem] = []
+    private var preferencesWindow: PreferencesWindow?
 
-    init(audioDeviceMonitor: AudioDeviceMonitoring, preferenceManager: PreferenceManaging) {
+    init(audioDeviceMonitor: AudioDeviceMonitoring, preferenceManager: PreferenceManaging, switchController: SwitchController? = nil) {
         self.audioDeviceMonitor = audioDeviceMonitor
         self.preferenceManager = preferenceManager
+        self.switchController = switchController
         logger.debug("Initializing StatusBarController")
 
         setupStatusItem()
         // Initial menu build
         updateMenu()
+        
+        // Initialize preferences window
+        self.preferencesWindow = PreferencesWindow(audioDeviceMonitor: audioDeviceMonitor, preferenceManager: preferenceManager)
 
-        // TODO: Register for notifications from monitors/controller to update menu dynamically
-        // For now, menu is static after initial build. We'll need a way to refresh it.
-        // e.g., NotificationCenter or Combine publishers from MacDeviSwitchKit components
-        // NotificationCenter.default.addObserver(self, selector: #selector(updateMenu), name: .audioDevicesChanged, object: nil) // Example
+        // Register for notifications to update menu dynamically
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(updateMenu),
+            name: NSNotification.Name("AudioDevicesChanged"),
+            object: nil
+        )
     }
 
     private func setupStatusItem() {
@@ -49,12 +57,12 @@ class StatusBarController {
         deviceMenuItems.removeAll()
         logger.debug("Updating status bar menu.")
 
-        // --- Current Device Section (Placeholder) ---
+        // --- Current Device Section ---
         // TODO: Get actual current default device from AudioSwitcher or monitor
         menu.addItem(NSMenuItem(title: "Current: System Default", action: nil, keyEquivalent: ""))
         menu.addItem(NSMenuItem.separator())
 
-        // --- Target Device Selection --- PRD 4.2.1
+        // --- Target Device Selection ---
         menu.addItem(NSMenuItem(title: "Select Target External Mic:", action: nil, keyEquivalent: ""))
 
         let currentTargetUID = preferenceManager.targetMicrophoneUID
@@ -77,16 +85,34 @@ class StatusBarController {
 
         menu.addItem(NSMenuItem.separator())
 
-        // --- Settings --- PRD 4.2.1
+        // --- Settings ---
         let revertItem = NSMenuItem(title: "Revert to Internal on Lid Open", action: #selector(toggleRevertPreference(_:)), keyEquivalent: "")
         revertItem.target = self
         revertItem.state = preferenceManager.revertOnLidOpen ? .on : .off
         menu.addItem(revertItem)
+        
+        // --- Preferences ---
+        menu.addItem(NSMenuItem.separator())
+        let preferencesItem = NSMenuItem(title: "Preferences...", action: #selector(openPreferences(_:)), keyEquivalent: ",")
+        preferencesItem.target = self
+        menu.addItem(preferencesItem)
+
+        // --- Diagnostic Menu Items ---
+        menu.addItem(NSMenuItem.separator())
+        
+        let diagnosticItem = NSMenuItem(title: "Diagnostic Info", action: #selector(showDiagnosticInfo(_:)), keyEquivalent: "")
+        diagnosticItem.target = self
+        menu.addItem(diagnosticItem)
+        
+        let forceSwitchItem = NSMenuItem(title: "Force Switch", action: #selector(forceSwitch(_:)), keyEquivalent: "")
+        forceSwitchItem.target = self
+        menu.addItem(forceSwitchItem)
 
         menu.addItem(NSMenuItem.separator())
 
-        // --- Quit --- PRD 4.2.1
-        menu.addItem(NSMenuItem(title: "Quit MacDeviSwitch", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+        // --- Quit ---
+        let quitItem = NSMenuItem(title: "Quit MacDeviSwitch", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        menu.addItem(quitItem)
 
         logger.debug("Menu update complete.")
     }
@@ -102,9 +128,9 @@ class StatusBarController {
 
         // Update checkmarks immediately
         updateMenuCheckmarks()
-
-        // TODO: Trigger the SwitchController to re-evaluate immediately?
-        // switchController.evaluateAndSwitch()
+        
+        // Trigger the SwitchController to re-evaluate immediately
+        switchController?.evaluateAndSwitch()
     }
 
     @objc private func toggleRevertPreference(_ sender: NSMenuItem) {
@@ -112,6 +138,12 @@ class StatusBarController {
         logger.info("User toggled 'Revert on Lid Open' to: \(newState)")
         preferenceManager.revertOnLidOpen = newState
         sender.state = newState ? .on : .off
+    }
+    
+    @objc private func openPreferences(_ sender: NSMenuItem) {
+        logger.info("Opening preferences window")
+        preferencesWindow?.showWindow(sender)
+        NSApp.activate(ignoringOtherApps: true)
     }
 
     // Helper to update only the checkmarks without rebuilding the whole menu
@@ -125,8 +157,45 @@ class StatusBarController {
          logger.debug("Menu checkmarks updated.")
     }
 
+    @objc private func showDiagnosticInfo(_ sender: NSMenuItem) {
+        logger.info("Diagnostic info requested.")
+        
+        // Run diagnostic if SwitchController is available
+        if let switchController = switchController {
+            switchController.diagnoseAudioSwitchingIssues()
+            logger.info("Diagnostic information has been printed to the console")
+        }
+    }
+
+    @objc private func forceSwitch(_ sender: NSMenuItem) {
+        logger.info("Force switch requested.")
+        
+        // Check if target microphone is set
+        guard let targetUID = preferenceManager.targetMicrophoneUID else {
+            logger.warning("No target microphone selected")
+            return
+        }
+        
+        // Find target device name for better UX
+        let availableInputs = audioDeviceMonitor.availableInputDevices
+        let targetName = availableInputs.first(where: { $0.uid == targetUID })?.name ?? "Unknown Device"
+        
+        // Attempt to force switch
+        if let switchController = switchController {
+            let success = switchController.forceAudioDeviceSwitch()
+            
+            if success {
+                logger.info("Successfully switched to \(targetName)")
+            } else {
+                logger.error("Failed to switch to \(targetName)")
+            }
+        } else {
+            logger.error("SwitchController is not available. Cannot force switch.")
+        }
+    }
+
     // Clean up observer if using NotificationCenter
-    // deinit {
-    //     NotificationCenter.default.removeObserver(self)
-    // }
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
 }

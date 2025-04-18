@@ -98,11 +98,7 @@ class MockAudioSwitcher: AudioSwitching {
 class MockPreferenceManager: PreferenceManaging {
     var targetMicrophoneUID: String? = nil
     var revertOnLidOpen: Bool = true
-
-    // Helper to simulate no target set
-    func clearTargetMic() {
-        targetMicrophoneUID = nil
-    }
+    var showNotifications: Bool = true
 }
 
 // MARK: - Mock NotificationManager

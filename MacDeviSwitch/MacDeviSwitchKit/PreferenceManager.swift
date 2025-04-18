@@ -4,6 +4,7 @@ import os.log
 public protocol PreferenceManaging {
     var targetMicrophoneUID: String? { get set }
     var revertOnLidOpen: Bool { get set }
+    var showNotifications: Bool { get set }
 }
 
 public final class PreferenceManager: PreferenceManaging {
@@ -14,6 +15,7 @@ public final class PreferenceManager: PreferenceManaging {
     private enum Keys {
         static let targetMicrophoneUID = "targetMicrophoneUID"
         static let revertOnLidOpen = "revertOnLidOpen"
+        static let showNotifications = "showNotifications"
     }
 
     // Allow injecting UserDefaults for testing
@@ -26,7 +28,8 @@ public final class PreferenceManager: PreferenceManaging {
 
     private func registerDefaults() {
         userDefaults.register(defaults: [
-            Keys.revertOnLidOpen: true // Default to reverting on lid open
+            Keys.revertOnLidOpen: true, // Default to reverting on lid open
+            Keys.showNotifications: true // Default to showing notifications
             // No default for targetMicrophoneUID, it should be explicitly set by the user
         ])
         logger.debug("Registered default preferences.")
@@ -53,6 +56,18 @@ public final class PreferenceManager: PreferenceManaging {
         set {
             logger.info("Setting revertOnLidOpen to: \(newValue)")
             userDefaults.set(newValue, forKey: Keys.revertOnLidOpen)
+        }
+    }
+    
+    public var showNotifications: Bool {
+        get {
+            let showNotifications = userDefaults.bool(forKey: Keys.showNotifications)
+            logger.debug("Getting showNotifications: \(showNotifications)")
+            return showNotifications
+        }
+        set {
+            logger.info("Setting showNotifications to: \(newValue)")
+            userDefaults.set(newValue, forKey: Keys.showNotifications)
         }
     }
 }

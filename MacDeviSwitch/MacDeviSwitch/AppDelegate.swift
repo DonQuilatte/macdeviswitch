@@ -31,6 +31,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Setup components
         setupComponents()
         
+        // Configure application menu
+        configureApplicationMenu()
+        
         // Start all monitoring components
         startMonitoring()
         
@@ -71,8 +74,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         lidMonitor = LidStateMonitor()
         displayMonitor = DisplayMonitor()
         audioDeviceMonitor = AudioDeviceMonitor()
-        notificationManager = NotificationManager()
         audioSwitcher = AudioSwitcher()
+        
+        // Initialize NotificationManager with PreferenceManager
+        notificationManager = NotificationManager(preferenceManager: preferenceManager)
         
         // Initialize SwitchController with dependencies
         switchController = SwitchController(
@@ -94,6 +99,47 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             preferenceManager: preferenceManager,
             switchController: switchController as? SwitchController
         )
+    }
+    
+    /// Configures the application menu to remove standard items
+    private func configureApplicationMenu() {
+        // Get the main menu
+        guard let mainMenu = NSApp.mainMenu else { return }
+        
+        // Keep only the application menu (first item)
+        if mainMenu.items.count > 1 {
+            // Remove all menu items except the first one (Apple/Application menu)
+            while mainMenu.items.count > 1 {
+                mainMenu.removeItem(at: 1)
+            }
+            
+            // Customize the application menu
+            if let appMenu = mainMenu.items.first?.submenu {
+                // Keep only About, Preferences, and Quit items
+                let itemsToKeep = appMenu.items.filter { item in
+                    let action = item.action
+                    return action == #selector(NSApplication.orderFrontStandardAboutPanel(_:)) ||
+                           action == #selector(NSApplication.terminate(_:)) ||
+                           item.isSeparatorItem
+                }
+                
+                appMenu.removeAllItems()
+                
+                // Add About item
+                if let aboutItem = itemsToKeep.first(where: { $0.action == #selector(NSApplication.orderFrontStandardAboutPanel(_:)) }) {
+                    appMenu.addItem(aboutItem)
+                }
+                
+                appMenu.addItem(NSMenuItem.separator())
+                
+                // Add Quit item
+                if let quitItem = itemsToKeep.first(where: { $0.action == #selector(NSApplication.terminate(_:)) }) {
+                    appMenu.addItem(quitItem)
+                }
+            }
+        }
+        
+        logger.info("Application menu configured")
     }
     
     /// Starts all monitoring components

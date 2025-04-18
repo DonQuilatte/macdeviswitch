@@ -2,28 +2,41 @@ import Foundation
 import CoreGraphics
 import os.log
 
-public protocol DisplayMonitoring {
-    var isExternalDisplayConnected: Bool { get }
-    // Add a publisher or delegate for state changes later
-}
-
 public final class DisplayMonitor: DisplayMonitoring {
     fileprivate let logger = Logger(subsystem: "com.yourcompany.macdeviswitchkit", category: "DisplayMonitor") // Replace with your bundle ID
 
     // Current state - reflects if at least one non-builtin display is connected
     public private(set) var isExternalDisplayConnected: Bool = false
+    
+    // Callback for display connection changes
+    public var onDisplayConnectionChange: ((Bool) -> Void)?
+    
+    // Monitoring state
+    private var isMonitoring: Bool = false
 
     public init() {
         logger.debug("Initializing DisplayMonitor")
         // Initial check
         updateExternalDisplayStatus()
-        // Register for notifications
-        registerForDisplayChanges()
     }
 
     deinit {
         logger.debug("Deinitializing DisplayMonitor")
+        stopMonitoring()
+    }
+    
+    public func startMonitoring() {
+        guard !isMonitoring else { return }
+        logger.debug("Starting display monitoring")
+        registerForDisplayChanges()
+        isMonitoring = true
+    }
+    
+    public func stopMonitoring() {
+        guard isMonitoring else { return }
+        logger.debug("Stopping display monitoring")
         unregisterForDisplayChanges()
+        isMonitoring = false
     }
 
     private func registerForDisplayChanges() {
@@ -77,7 +90,7 @@ public final class DisplayMonitor: DisplayMonitoring {
         if self.isExternalDisplayConnected != isConnected {
             logger.info("External display connection status changed: \(isConnected ? "Connected" : "Disconnected")")
             self.isExternalDisplayConnected = isConnected
-            // Notify delegates or publish changes here later
+            onDisplayConnectionChange?(isConnected)
         }
     }
 }

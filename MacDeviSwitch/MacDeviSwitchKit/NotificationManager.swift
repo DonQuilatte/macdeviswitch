@@ -12,37 +12,41 @@ public final class NotificationManager: NotificationManaging {
     /// The user notification center instance for managing notifications.
     private let notificationCenter = UNUserNotificationCenter.current()
     
-    /// Initialize the notification manager and request permissions.
-    ///
-    /// This initializer requests notification permissions and logs a debug message.
-    public init() {
-        requestPermissions()
+    /// The preference manager instance for checking notification settings.
+    private let preferenceManager: PreferenceManaging
+    
+    /// Initializes a new NotificationManager
+    /// - Parameter preferenceManager: The preference manager to check notification settings
+    public init(preferenceManager: PreferenceManaging) {
+        self.preferenceManager = preferenceManager
+        requestNotificationPermission()
         logger.debug("Initializing NotificationManager")
     }
     
-    /// Request permission to send notifications.
-    ///
-    /// This method requests authorization for alert and sound notifications and logs the result.
-    private func requestPermissions() {
+    /// Requests permission to show notifications
+    private func requestNotificationPermission() {
         notificationCenter.requestAuthorization(options: [.alert, .sound]) { granted, error in
-            if granted {
-                self.logger.debug("Notification permissions granted")
-            } else if let error = error {
-                self.logger.error("Failed to request notification permissions: \(error.localizedDescription)")
+            if let error = error {
+                self.logger.error("Failed to request notification permission: \(error.localizedDescription)")
+            } else if granted {
+                self.logger.debug("Notification permission granted")
             } else {
-                self.logger.warning("Notification permissions denied")
+                self.logger.warning("Notification permission denied")
             }
         }
     }
     
-    /// Send a notification to the user.
-    ///
+    /// Sends a notification with the given title and body
     /// - Parameters:
-    ///   - title: The notification title.
-    ///   - body: The notification body text.
-    ///
-    /// This method creates a notification content instance, sets the title, body, and sound, and adds the notification request to the notification center.
+    ///   - title: The notification title
+    ///   - body: The notification body text
     public func sendNotification(title: String, body: String) {
+        // Check if notifications are enabled in preferences
+        guard preferenceManager.showNotifications else {
+            logger.debug("Notifications disabled in preferences, skipping notification: \(title)")
+            return
+        }
+        
         let content = UNMutableNotificationContent()
         content.title = title
         content.body = body

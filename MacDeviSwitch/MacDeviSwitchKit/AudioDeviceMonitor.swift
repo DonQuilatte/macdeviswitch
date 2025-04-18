@@ -11,11 +11,6 @@ public struct AudioDeviceInfo: Identifiable, Hashable {
     // Add other properties if needed (e.g., manufacturer)
 }
 
-public protocol AudioDeviceMonitoring {
-    var availableInputDevices: [AudioDeviceInfo] { get }
-    // Add publisher/delegate for changes
-}
-
 public final class AudioDeviceMonitor: AudioDeviceMonitoring {
     fileprivate let logger = Logger(subsystem: "com.yourcompany.macdeviswitchkit", category: "AudioDeviceMonitor") // Replace
     public private(set) var availableInputDevices: [AudioDeviceInfo] = []
@@ -26,16 +21,32 @@ public final class AudioDeviceMonitor: AudioDeviceMonitoring {
         mScope: kAudioObjectPropertyScopeGlobal,
         mElement: kAudioObjectPropertyElementMain
     )
+    
+    // Monitoring state
+    private var isMonitoring: Bool = false
 
     public init() {
         logger.debug("Initializing AudioDeviceMonitor")
         updateDeviceList()
-        registerForDeviceChanges()
     }
 
     deinit {
         logger.debug("Deinitializing AudioDeviceMonitor")
+        stopMonitoring()
+    }
+    
+    public func startMonitoring() {
+        guard !isMonitoring else { return }
+        logger.debug("Starting audio device monitoring")
+        registerForDeviceChanges()
+        isMonitoring = true
+    }
+    
+    public func stopMonitoring() {
+        guard isMonitoring else { return }
+        logger.debug("Stopping audio device monitoring")
         unregisterForDeviceChanges()
+        isMonitoring = false
     }
 
     private func registerForDeviceChanges() {

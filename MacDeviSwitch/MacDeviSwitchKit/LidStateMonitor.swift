@@ -3,11 +3,6 @@ import IOKit
 import IOKit.pwr_mgt
 import os.log
 
-public protocol LidStateMonitoring {
-    var isLidOpen: Bool { get }
-    // Add a publisher or delegate for state changes later
-}
-
 public final class LidStateMonitor: LidStateMonitoring {
     fileprivate let logger = Logger(subsystem: "com.yourcompany.macdeviswitchkit", category: "LidStateMonitor") // Replace with your bundle ID
     fileprivate var rootPort: io_connect_t = 0
@@ -16,17 +11,36 @@ public final class LidStateMonitor: LidStateMonitoring {
 
     // Current state - initialized by querying IOKit
     public private(set) var isLidOpen: Bool = true // Default assumption, immediately queried
+    
+    // Callback for lid state changes
+    public var onLidStateChange: ((Bool) -> Void)?
+    
+    // Monitoring state
+    private var isMonitoring: Bool = false
 
     public init() {
         logger.debug("Initializing LidStateMonitor")
         // Query initial state immediately
         queryAndUpdateLidState()
-        setupPowerNotification()
     }
 
     deinit {
         logger.debug("Deinitializing LidStateMonitor")
+        stopMonitoring()
+    }
+    
+    public func startMonitoring() {
+        guard !isMonitoring else { return }
+        logger.debug("Starting lid state monitoring")
+        setupPowerNotification()
+        isMonitoring = true
+    }
+    
+    public func stopMonitoring() {
+        guard isMonitoring else { return }
+        logger.debug("Stopping lid state monitoring")
         tearDownPowerNotification()
+        isMonitoring = false
     }
 
     private func setupPowerNotification() {
@@ -159,6 +173,7 @@ extension LidStateMonitor {
             logger.info("Lid state changed to: \(isOpen ? "Open" : "Closed")")
             self.isLidOpen = isOpen
             // Notify delegates or publish changes here later
+            onLidStateChange?(isOpen)
         }
     }
 
