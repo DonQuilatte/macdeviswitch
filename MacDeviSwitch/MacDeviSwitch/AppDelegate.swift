@@ -1,34 +1,80 @@
-//
-//  AppDelegate.swift
-//  MacDeviSwitch
-//
-//  Created by Jed Erlichman on 18/04/2025.
-//
-
 import Cocoa
 import MacDeviSwitchKit
+import os.log
 
 @main
 class AppDelegate: NSObject, NSApplicationDelegate {
-
-    // MARK: - Properties for MacDeviSwitch
+    // MARK: - Properties
+    
+    // UI Components
+    private var statusBarController: StatusBarController!
+    
+    // MacDeviSwitchKit Components
+    private var preferenceManager: PreferenceManaging!
     private var lidMonitor: LidStateMonitoring!
     private var displayMonitor: DisplayMonitoring!
     private var audioDeviceMonitor: AudioDeviceMonitoring!
-    private var audioSwitcher: AudioSwitching!
-    private var preferenceManager: PreferenceManaging!
     private var switchController: SwitchControlling!
-    private var statusBarController: StatusBarController!
-
-
+    private var notificationManager: NotificationManaging!
+    private var audioSwitcher: AudioSwitching!
+    
+    // Logging
+    private let logger = Logger(subsystem: "com.yourcompany.macdeviswitch", category: "AppDelegate")
+    private var logFileURL: URL?
+    
+    // MARK: - Application Lifecycle
+    
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        // --- Initialize MacDeviSwitch Components ---
+        // Create log file for diagnostics
+        setupDiagnosticLogFile()
+        
+        // Setup components
+        setupComponents()
+        
+        // Start all monitoring components
+        startMonitoring()
+        
+        // Schedule periodic diagnostics
+        scheduleDiagnostics()
+        
+        #if DEBUG
+        // Run initial diagnostics in debug mode
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+            self?.runInitialDiagnostics()
+        }
+        #endif
+    }
+    
+    /// Sets up a diagnostic log file in the user's Documents directory
+    private func setupDiagnosticLogFile() {
+        let fileManager = FileManager.default
+        let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+        logFileURL = documentsDirectory.appendingPathComponent("macdeviswitch_diagnostics.log")
+        
+        // Create or clear the log file
+        if let url = logFileURL {
+            do {
+                try "=== MacDeviSwitch Diagnostic Log ===\nStarted: \(Date())\n\n".write(to: url, atomically: true, encoding: .utf8)
+                logger.info("Diagnostic log file created at \(url.path)")
+                print("Diagnostic log file created at \(url.path)")
+            } catch {
+                logger.error("Failed to create diagnostic log file: \(error.localizedDescription)")
+                print("Failed to create diagnostic log file: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    /// Initializes all components needed for the application
+    private func setupComponents() {
+        // --- Initialize MacDeviSwitchKit Components ---
         preferenceManager = PreferenceManager()
         lidMonitor = LidStateMonitor()
         displayMonitor = DisplayMonitor()
         audioDeviceMonitor = AudioDeviceMonitor()
+        notificationManager = NotificationManager()
         audioSwitcher = AudioSwitcher()
-
+        
+        // Initialize SwitchController with dependencies
         switchController = SwitchController(
             lidMonitor: lidMonitor,
             displayMonitor: displayMonitor,
@@ -36,125 +82,78 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             audioSwitcher: audioSwitcher,
             preferences: preferenceManager
         )
-
+        
+        // Set the notification manager
+        if let controller = switchController as? SwitchController {
+            controller.setNotificationManager(notificationManager)
+        }
+        
+        // Initialize StatusBarController with dependencies
         statusBarController = StatusBarController(
             audioDeviceMonitor: audioDeviceMonitor,
-            preferenceManager: preferenceManager
+            preferenceManager: preferenceManager,
+            switchController: switchController as? SwitchController
         )
-
-        // Start the controller (event handling needs refinement later)
-        switchController.start()
-
-        // TODO: Set up Combine publishers/delegates between components
-        // Example: lidMonitor.publisher.sink { [weak self] state in self?.switchController.handleLidChange(state) }
-
-        // --- Original Initialization Code ---
-        // Insert code here to initialize your application
     }
-
+    
+    /// Starts all monitoring components
+    private func startMonitoring() {
+        // Start the controller (which will start all individual monitors)
+        switchController.startMonitoring()
+        
+        writeToLogFile("All monitoring components started")
+    }
+    
+    /// Schedules periodic diagnostic runs
+    private func scheduleDiagnostics() {
+        // Schedule diagnostics to run every hour
+        Timer.scheduledTimer(withTimeInterval: 3600, repeats: true) { [weak self] _ in
+            self?.writeToLogFile("Running scheduled diagnostics...")
+            
+            if let controller = self?.switchController as? SwitchController {
+                controller.diagnoseAudioSwitchingIssues()
+            }
+        }
+    }
+    
+    /// Writes a message to the diagnostic log file
+    /// - Parameter message: The message to write to the log
+    private func writeToLogFile(_ message: String) {
+        guard let url = logFileURL else { return }
+        
+        do {
+            let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .medium)
+            let logMessage = "[\(timestamp)] \(message)\n"
+            
+            if let fileHandle = try? FileHandle(forWritingTo: url) {
+                fileHandle.seekToEndOfFile()
+                if let data = logMessage.data(using: .utf8) {
+                    fileHandle.write(data)
+                }
+                fileHandle.closeFile()
+            }
+        } catch {
+            logger.error("Failed to write to log file: \(error.localizedDescription)")
+        }
+    }
+    
+    /// Runs initial diagnostics to verify the system state
+    private func runInitialDiagnostics() {
+        writeToLogFile("Running initial diagnostics...")
+        
+        // Run diagnostic on startup
+        if let controller = switchController as? SwitchController {
+            controller.diagnoseAudioSwitchingIssues()
+        }
+    }
+    
     func applicationWillTerminate(_ aNotification: Notification) {
-        // Insert code here to tear down your application
+        // Stop all monitoring before terminating
+        switchController.stopMonitoring()
+        writeToLogFile("Application terminating, monitoring stopped")
     }
-
+    
     func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {
         return true
     }
-
-    // MARK: - Core Data stack
-
-    lazy var persistentContainer: NSPersistentContainer = {
-        /*
-         The persistent container for the application. This implementation
-         creates and returns a container, having loaded the store for the
-         application to it. This property is optional since there are legitimate
-         error conditions that could cause the creation of the store to fail.
-        */
-        let container = NSPersistentContainer(name: "MacDeviSwitch")
-        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
-            if let error = error {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                 
-                /*
-                 Typical reasons for an error here include:
-                 * The parent directory does not exist, cannot be created, or disallows writing.
-                 * The persistent store is not accessible, due to permissions or data protection when the device is locked.
-                 * The device is out of space.
-                 * The store could not be migrated to the current model version.
-                 Check the error message to determine what the actual problem was.
-                 */
-                fatalError("Unresolved error \(error)")
-            }
-        })
-        return container
-    }()
-
-    // MARK: - Core Data Saving and Undo support
-
-    func save() {
-        // Performs the save action for the application, which is to send the save: message to the application's managed object context. Any encountered errors are presented to the user.
-        let context = persistentContainer.viewContext
-
-        if !context.commitEditing() {
-            NSLog("\(NSStringFromClass(type(of: self))) unable to commit editing before saving")
-        }
-        if context.hasChanges {
-            do {
-                try context.save()
-            } catch {
-                // Customize this code block to include application-specific recovery steps.
-                let nserror = error as NSError
-                NSApplication.shared.presentError(nserror)
-            }
-        }
-    }
-
-    func windowWillReturnUndoManager(window: NSWindow) -> UndoManager? {
-        // Returns the NSUndoManager for the application. In this case, the manager returned is that of the managed object context for the application.
-        return persistentContainer.viewContext.undoManager
-    }
-
-    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
-        // Save changes in the application's managed object context before the application terminates.
-        let context = persistentContainer.viewContext
-        
-        if !context.commitEditing() {
-            NSLog("\(NSStringFromClass(type(of: self))) unable to commit editing to terminate")
-            return .terminateCancel
-        }
-        
-        if !context.hasChanges {
-            return .terminateNow
-        }
-        
-        do {
-            try context.save()
-        } catch {
-            let nserror = error as NSError
-
-            // Customize this code block to include application-specific recovery steps.
-            let result = sender.presentError(nserror)
-            if (result) {
-                return .terminateCancel
-            }
-            
-            let question = NSLocalizedString("Could not save changes while quitting. Quit anyway?", comment: "Quit without saves error question message")
-            let info = NSLocalizedString("Quitting now will lose any changes you have made since the last successful save", comment: "Quit without saves error question info");
-            let quitButton = NSLocalizedString("Quit anyway", comment: "Quit anyway button title")
-            let cancelButton = NSLocalizedString("Cancel", comment: "Cancel button title")
-            let alert = NSAlert()
-            alert.messageText = question
-            alert.informativeText = info
-            alert.addButton(withTitle: quitButton)
-            alert.addButton(withTitle: cancelButton)
-            
-            let answer = alert.runModal()
-            if answer == .alertSecondButtonReturn {
-                return .terminateCancel
-            }
-        }
-        // If we got here, it is time to quit.
-        return .terminateNow
-    }
-
 }

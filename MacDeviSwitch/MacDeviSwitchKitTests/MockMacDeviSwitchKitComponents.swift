@@ -6,13 +6,30 @@ import CoreAudio // Needed for AudioDeviceID
 
 class MockLidStateMonitor: LidStateMonitoring {
     var isLidOpen: Bool = true // Default state, controllable by tests
-    // Add properties to track calls if needed
+    var onLidStateChange: ((Bool) -> Void)? = nil
+    
+    func startMonitoring() {
+        // No-op for mock
+    }
+    
+    func stopMonitoring() {
+        // No-op for mock
+    }
 }
 
 // MARK: - Mock DisplayMonitor
 
 class MockDisplayMonitor: DisplayMonitoring {
     var isExternalDisplayConnected: Bool = false // Default state, controllable by tests
+    var onDisplayConnectionChange: ((Bool) -> Void)? = nil
+    
+    func startMonitoring() {
+        // No-op for mock
+    }
+    
+    func stopMonitoring() {
+        // No-op for mock
+    }
 }
 
 // MARK: - Mock AudioDeviceMonitor
@@ -20,6 +37,14 @@ class MockDisplayMonitor: DisplayMonitoring {
 class MockAudioDeviceMonitor: AudioDeviceMonitoring {
     var availableInputDevices: [AudioDeviceInfo] = [] // Controllable by tests
 
+    func startMonitoring() {
+        // No-op for mock
+    }
+    
+    func stopMonitoring() {
+        // No-op for mock
+    }
+    
     // Helper to easily add devices
     func addDevice(id: AudioDeviceID, uid: String, name: String) {
         availableInputDevices.append(AudioDeviceInfo(id: id, uid: uid, name: name, isInput: true))
@@ -77,5 +102,25 @@ class MockPreferenceManager: PreferenceManaging {
     // Helper to simulate no target set
     func clearTargetMic() {
         targetMicrophoneUID = nil
+    }
+}
+
+// MARK: - Mock NotificationManager
+
+class MockNotificationManager: NotificationManaging {
+    var lastTitle: String? = nil
+    var lastBody: String? = nil
+    var notificationCount: Int = 0
+    
+    func sendNotification(title: String, body: String) {
+        lastTitle = title
+        lastBody = body
+        notificationCount += 1
+    }
+    
+    func resetMockState() {
+        lastTitle = nil
+        lastBody = nil
+        notificationCount = 0
     }
 }
