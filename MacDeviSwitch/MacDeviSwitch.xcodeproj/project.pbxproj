@@ -1,0 +1,862 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		923BCCD02DB26F7B0068ACDF /* MacDeviSwitchKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 923BCCC52DB26F7B0068ACDF /* MacDeviSwitchKit.framework */; };
+		923BCCDA2DB26F7B0068ACDF /* MacDeviSwitchKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 923BCCC52DB26F7B0068ACDF /* MacDeviSwitchKit.framework */; };
+		923BCCDB2DB26F7B0068ACDF /* MacDeviSwitchKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 923BCCC52DB26F7B0068ACDF /* MacDeviSwitchKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		923BCCA42DB26EA40068ACDF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 923BCC872DB26EA20068ACDF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 923BCC8E2DB26EA20068ACDF;
+			remoteInfo = MacDeviSwitch;
+		};
+		923BCCAE2DB26EA40068ACDF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 923BCC872DB26EA20068ACDF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 923BCC8E2DB26EA20068ACDF;
+			remoteInfo = MacDeviSwitch;
+		};
+		923BCCD12DB26F7B0068ACDF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 923BCC872DB26EA20068ACDF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 923BCCC42DB26F7B0068ACDF;
+			remoteInfo = MacDeviSwitchKit;
+		};
+		923BCCD32DB26F7B0068ACDF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 923BCC872DB26EA20068ACDF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 923BCC8E2DB26EA20068ACDF;
+			remoteInfo = MacDeviSwitch;
+		};
+		923BCCD82DB26F7B0068ACDF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 923BCC872DB26EA20068ACDF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 923BCCC42DB26F7B0068ACDF;
+			remoteInfo = MacDeviSwitchKit;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		923BCCDF2DB26F7B0068ACDF /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				923BCCDB2DB26F7B0068ACDF /* MacDeviSwitchKit.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		920A75F42DB27ED90046E3A4 /* MacDeviSwitchKitTests */ = {isa = PBXFileReference; lastKnownFileType = folder; path = MacDeviSwitchKitTests; sourceTree = "<group>"; };
+		920A75F52DB281150046E3A4 /* TestPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TestPlan.xctestplan; sourceTree = "<group>"; };
+		923BCC8F2DB26EA20068ACDF /* MacDeviSwitch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacDeviSwitch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		923BCCA32DB26EA40068ACDF /* MacDeviSwitchTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacDeviSwitchTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		923BCCAD2DB26EA40068ACDF /* MacDeviSwitchUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacDeviSwitchUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		923BCCC52DB26F7B0068ACDF /* MacDeviSwitchKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MacDeviSwitchKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		923BCCCF2DB26F7B0068ACDF /* MacDeviSwitchKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacDeviSwitchKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		923BCCF82DB27B110068ACDF /* MacDeviSwitchKitTests */ = {isa = PBXFileReference; lastKnownFileType = folder; path = MacDeviSwitchKitTests; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		923BCC912DB26EA20068ACDF /* MacDeviSwitch */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MacDeviSwitch;
+			sourceTree = "<group>";
+		};
+		923BCCA62DB26EA40068ACDF /* MacDeviSwitchTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MacDeviSwitchTests;
+			sourceTree = "<group>";
+		};
+		923BCCB02DB26EA40068ACDF /* MacDeviSwitchUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MacDeviSwitchUITests;
+			sourceTree = "<group>";
+		};
+		923BCCC62DB26F7B0068ACDF /* MacDeviSwitchKit */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MacDeviSwitchKit;
+			sourceTree = "<group>";
+		};
+		923BCCD52DB26F7B0068ACDF /* MacDeviSwitchKitTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MacDeviSwitchKitTests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		923BCC8C2DB26EA20068ACDF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				923BCCDA2DB26F7B0068ACDF /* MacDeviSwitchKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		923BCCA02DB26EA40068ACDF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		923BCCAA2DB26EA40068ACDF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		923BCCC22DB26F7B0068ACDF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		923BCCCC2DB26F7B0068ACDF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				923BCCD02DB26F7B0068ACDF /* MacDeviSwitchKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		923BCC862DB26EA20068ACDF = {
+			isa = PBXGroup;
+			children = (
+				920A75F52DB281150046E3A4 /* TestPlan.xctestplan */,
+				920A75F42DB27ED90046E3A4 /* MacDeviSwitchKitTests */,
+				923BCCF82DB27B110068ACDF /* MacDeviSwitchKitTests */,
+				923BCC912DB26EA20068ACDF /* MacDeviSwitch */,
+				923BCCA62DB26EA40068ACDF /* MacDeviSwitchTests */,
+				923BCCB02DB26EA40068ACDF /* MacDeviSwitchUITests */,
+				923BCCC62DB26F7B0068ACDF /* MacDeviSwitchKit */,
+				923BCCD52DB26F7B0068ACDF /* MacDeviSwitchKitTests */,
+				923BCCE32DB26FF20068ACDF /* Frameworks */,
+				923BCC902DB26EA20068ACDF /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		923BCC902DB26EA20068ACDF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				923BCC8F2DB26EA20068ACDF /* MacDeviSwitch.app */,
+				923BCCA32DB26EA40068ACDF /* MacDeviSwitchTests.xctest */,
+				923BCCAD2DB26EA40068ACDF /* MacDeviSwitchUITests.xctest */,
+				923BCCC52DB26F7B0068ACDF /* MacDeviSwitchKit.framework */,
+				923BCCCF2DB26F7B0068ACDF /* MacDeviSwitchKitTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		923BCCE32DB26FF20068ACDF /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		923BCCC02DB26F7B0068ACDF /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		923BCC8E2DB26EA20068ACDF /* MacDeviSwitch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 923BCCB72DB26EA40068ACDF /* Build configuration list for PBXNativeTarget "MacDeviSwitch" */;
+			buildPhases = (
+				923BCC8B2DB26EA20068ACDF /* Sources */,
+				923BCC8C2DB26EA20068ACDF /* Frameworks */,
+				923BCC8D2DB26EA20068ACDF /* Resources */,
+				923BCCDF2DB26F7B0068ACDF /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				923BCCD92DB26F7B0068ACDF /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				923BCC912DB26EA20068ACDF /* MacDeviSwitch */,
+			);
+			name = MacDeviSwitch;
+			packageProductDependencies = (
+			);
+			productName = MacDeviSwitch;
+			productReference = 923BCC8F2DB26EA20068ACDF /* MacDeviSwitch.app */;
+			productType = "com.apple.product-type.application";
+		};
+		923BCCA22DB26EA40068ACDF /* MacDeviSwitchTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 923BCCBA2DB26EA40068ACDF /* Build configuration list for PBXNativeTarget "MacDeviSwitchTests" */;
+			buildPhases = (
+				923BCC9F2DB26EA40068ACDF /* Sources */,
+				923BCCA02DB26EA40068ACDF /* Frameworks */,
+				923BCCA12DB26EA40068ACDF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				923BCCA52DB26EA40068ACDF /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				923BCCA62DB26EA40068ACDF /* MacDeviSwitchTests */,
+			);
+			name = MacDeviSwitchTests;
+			packageProductDependencies = (
+			);
+			productName = MacDeviSwitchTests;
+			productReference = 923BCCA32DB26EA40068ACDF /* MacDeviSwitchTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		923BCCAC2DB26EA40068ACDF /* MacDeviSwitchUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 923BCCBD2DB26EA40068ACDF /* Build configuration list for PBXNativeTarget "MacDeviSwitchUITests" */;
+			buildPhases = (
+				923BCCA92DB26EA40068ACDF /* Sources */,
+				923BCCAA2DB26EA40068ACDF /* Frameworks */,
+				923BCCAB2DB26EA40068ACDF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				923BCCAF2DB26EA40068ACDF /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				923BCCB02DB26EA40068ACDF /* MacDeviSwitchUITests */,
+			);
+			name = MacDeviSwitchUITests;
+			packageProductDependencies = (
+			);
+			productName = MacDeviSwitchUITests;
+			productReference = 923BCCAD2DB26EA40068ACDF /* MacDeviSwitchUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		923BCCC42DB26F7B0068ACDF /* MacDeviSwitchKit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 923BCCDC2DB26F7B0068ACDF /* Build configuration list for PBXNativeTarget "MacDeviSwitchKit" */;
+			buildPhases = (
+				923BCCC02DB26F7B0068ACDF /* Headers */,
+				923BCCC12DB26F7B0068ACDF /* Sources */,
+				923BCCC22DB26F7B0068ACDF /* Frameworks */,
+				923BCCC32DB26F7B0068ACDF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				923BCCC62DB26F7B0068ACDF /* MacDeviSwitchKit */,
+			);
+			name = MacDeviSwitchKit;
+			packageProductDependencies = (
+			);
+			productName = MacDeviSwitchKit;
+			productReference = 923BCCC52DB26F7B0068ACDF /* MacDeviSwitchKit.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		923BCCCE2DB26F7B0068ACDF /* MacDeviSwitchKitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 923BCCE02DB26F7B0068ACDF /* Build configuration list for PBXNativeTarget "MacDeviSwitchKitTests" */;
+			buildPhases = (
+				923BCCCB2DB26F7B0068ACDF /* Sources */,
+				923BCCCC2DB26F7B0068ACDF /* Frameworks */,
+				923BCCCD2DB26F7B0068ACDF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				923BCCD22DB26F7B0068ACDF /* PBXTargetDependency */,
+				923BCCD42DB26F7B0068ACDF /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				923BCCD52DB26F7B0068ACDF /* MacDeviSwitchKitTests */,
+			);
+			name = MacDeviSwitchKitTests;
+			packageProductDependencies = (
+			);
+			productName = MacDeviSwitchKitTests;
+			productReference = 923BCCCF2DB26F7B0068ACDF /* MacDeviSwitchKitTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		923BCC872DB26EA20068ACDF /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1630;
+				LastUpgradeCheck = 1630;
+				TargetAttributes = {
+					923BCC8E2DB26EA20068ACDF = {
+						CreatedOnToolsVersion = 16.3;
+					};
+					923BCCA22DB26EA40068ACDF = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = 923BCC8E2DB26EA20068ACDF;
+					};
+					923BCCAC2DB26EA40068ACDF = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = 923BCC8E2DB26EA20068ACDF;
+					};
+					923BCCC42DB26F7B0068ACDF = {
+						CreatedOnToolsVersion = 16.3;
+					};
+					923BCCCE2DB26F7B0068ACDF = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = 923BCC8E2DB26EA20068ACDF;
+					};
+				};
+			};
+			buildConfigurationList = 923BCC8A2DB26EA20068ACDF /* Build configuration list for PBXProject "MacDeviSwitch" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 923BCC862DB26EA20068ACDF;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 923BCC902DB26EA20068ACDF /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				923BCC8E2DB26EA20068ACDF /* MacDeviSwitch */,
+				923BCCA22DB26EA40068ACDF /* MacDeviSwitchTests */,
+				923BCCAC2DB26EA40068ACDF /* MacDeviSwitchUITests */,
+				923BCCC42DB26F7B0068ACDF /* MacDeviSwitchKit */,
+				923BCCCE2DB26F7B0068ACDF /* MacDeviSwitchKitTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		923BCC8D2DB26EA20068ACDF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		923BCCA12DB26EA40068ACDF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		923BCCAB2DB26EA40068ACDF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		923BCCC32DB26F7B0068ACDF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		923BCCCD2DB26F7B0068ACDF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		923BCC8B2DB26EA20068ACDF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		923BCC9F2DB26EA40068ACDF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		923BCCA92DB26EA40068ACDF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		923BCCC12DB26F7B0068ACDF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		923BCCCB2DB26F7B0068ACDF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		923BCCA52DB26EA40068ACDF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 923BCC8E2DB26EA20068ACDF /* MacDeviSwitch */;
+			targetProxy = 923BCCA42DB26EA40068ACDF /* PBXContainerItemProxy */;
+		};
+		923BCCAF2DB26EA40068ACDF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 923BCC8E2DB26EA20068ACDF /* MacDeviSwitch */;
+			targetProxy = 923BCCAE2DB26EA40068ACDF /* PBXContainerItemProxy */;
+		};
+		923BCCD22DB26F7B0068ACDF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 923BCCC42DB26F7B0068ACDF /* MacDeviSwitchKit */;
+			targetProxy = 923BCCD12DB26F7B0068ACDF /* PBXContainerItemProxy */;
+		};
+		923BCCD42DB26F7B0068ACDF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 923BCC8E2DB26EA20068ACDF /* MacDeviSwitch */;
+			targetProxy = 923BCCD32DB26F7B0068ACDF /* PBXContainerItemProxy */;
+		};
+		923BCCD92DB26F7B0068ACDF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 923BCCC42DB26F7B0068ACDF /* MacDeviSwitchKit */;
+			targetProxy = 923BCCD82DB26F7B0068ACDF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		923BCCB52DB26EA40068ACDF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		923BCCB62DB26EA40068ACDF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		923BCCB82DB26EA40068ACDF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MacDeviSwitch/MacDeviSwitch.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = via.MacDeviSwitch;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		923BCCB92DB26EA40068ACDF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MacDeviSwitch/MacDeviSwitch.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = via.MacDeviSwitch;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		923BCCBB2DB26EA40068ACDF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = via.MacDeviSwitchTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MacDeviSwitch.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MacDeviSwitch";
+			};
+			name = Debug;
+		};
+		923BCCBC2DB26EA40068ACDF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = via.MacDeviSwitchTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MacDeviSwitch.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MacDeviSwitch";
+			};
+			name = Release;
+		};
+		923BCCBE2DB26EA40068ACDF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = via.MacDeviSwitchUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = MacDeviSwitch;
+			};
+			name = Debug;
+		};
+		923BCCBF2DB26EA40068ACDF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = via.MacDeviSwitchUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = MacDeviSwitch;
+			};
+			name = Release;
+		};
+		923BCCDD2DB26F7B0068ACDF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = via.MacDeviSwitchKit;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_MODULE = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		923BCCDE2DB26F7B0068ACDF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = via.MacDeviSwitchKit;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_MODULE = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		923BCCE12DB26F7B0068ACDF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = via.MacDeviSwitchKitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MacDeviSwitch.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MacDeviSwitch";
+			};
+			name = Debug;
+		};
+		923BCCE22DB26F7B0068ACDF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = via.MacDeviSwitchKitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MacDeviSwitch.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MacDeviSwitch";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		923BCC8A2DB26EA20068ACDF /* Build configuration list for PBXProject "MacDeviSwitch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				923BCCB52DB26EA40068ACDF /* Debug */,
+				923BCCB62DB26EA40068ACDF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		923BCCB72DB26EA40068ACDF /* Build configuration list for PBXNativeTarget "MacDeviSwitch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				923BCCB82DB26EA40068ACDF /* Debug */,
+				923BCCB92DB26EA40068ACDF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		923BCCBA2DB26EA40068ACDF /* Build configuration list for PBXNativeTarget "MacDeviSwitchTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				923BCCBB2DB26EA40068ACDF /* Debug */,
+				923BCCBC2DB26EA40068ACDF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		923BCCBD2DB26EA40068ACDF /* Build configuration list for PBXNativeTarget "MacDeviSwitchUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				923BCCBE2DB26EA40068ACDF /* Debug */,
+				923BCCBF2DB26EA40068ACDF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		923BCCDC2DB26F7B0068ACDF /* Build configuration list for PBXNativeTarget "MacDeviSwitchKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				923BCCDD2DB26F7B0068ACDF /* Debug */,
+				923BCCDE2DB26F7B0068ACDF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		923BCCE02DB26F7B0068ACDF /* Build configuration list for PBXNativeTarget "MacDeviSwitchKitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				923BCCE12DB26F7B0068ACDF /* Debug */,
+				923BCCE22DB26F7B0068ACDF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 923BCC872DB26EA20068ACDF /* Project object */;
+}
