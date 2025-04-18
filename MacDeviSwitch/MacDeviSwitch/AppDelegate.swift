@@ -20,7 +20,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var audioSwitcher: AudioSwitching!
     
     // Logging
-    private let logger = Logger(subsystem: "com.yourcompany.macdeviswitch", category: "AppDelegate")
+    private let logger = Logger(subsystem: "via.MacDeviSwitch", category: "AppDelegate")
     private var logFileURL: URL?
     
     // MARK: - Application Lifecycle
@@ -93,9 +93,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         )
         
         // Set the notification manager
-        if let controller = switchController as? SwitchController {
-            controller.setNotificationManager(notificationManager)
-        }
+        switchController.setNotificationManager(notificationManager)
         
         // Initialize StatusBarController with dependencies
         statusBarController = StatusBarController(

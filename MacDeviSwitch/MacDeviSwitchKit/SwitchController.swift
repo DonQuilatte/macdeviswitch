@@ -2,30 +2,67 @@ import Foundation
 import CoreAudio
 import os.log
 
-/// Controls audio device switching based on lid state and display connections
-public final class SwitchController: SwitchControlling {
-    private let logger = Logger(subsystem: "com.yourcompany.macdeviswitchkit", category: "SwitchController")
+// MARK: - Error Types
 
-    private var lidMonitor: LidStateMonitoring
-    private var displayMonitor: DisplayMonitoring
-    private var audioDeviceMonitor: AudioDeviceMonitoring
-    private let audioSwitcher: AudioSwitching
-    private let preferences: PreferenceManaging
-
-    // Store the UID of the mic that was active before switching to external
-    private var fallbackMicrophoneUID: String? = nil
-    private var fallbackMicrophoneID: AudioDeviceID? = nil // Store ID too for quicker revert
+/// Errors that can occur during switch controller operations
+public enum SwitchControllerError: LocalizedError {
+    case monitoringFailure(String)
+    case audioSwitchingFailure(String)
     
-    // Optional notification manager for user feedback
-    private var notificationManager: NotificationManaging?
+    public var errorDescription: String? {
+        switch self {
+        case .monitoringFailure(let message):
+            return "Monitoring failure: \(message)"
+        case .audioSwitchingFailure(let message):
+            return "Audio switching failure: \(message)"
+        }
+    }
+}
 
-    /// Initialize the SwitchController with required dependencies
+/// Controller for audio device switching based on lid state and display connections
+public class SwitchController: SwitchControlling {
+    // MARK: - Properties
+    
+    /// Monitor for lid state changes.
+    /// 
+    /// This dependency is used to track changes in the lid state, which can trigger audio device switching.
+    private var lidMonitor: LidStateMonitoring
+    
+    /// Monitor for display connection changes.
+    /// 
+    /// This dependency is used to track changes in display connections, which can trigger audio device switching.
+    private var displayMonitor: DisplayMonitoring
+    
+    /// Monitor for audio device changes.
+    /// 
+    /// This dependency is used to track changes in available audio devices, which can affect audio device switching.
+    private let audioDeviceMonitor: AudioDeviceMonitoring
+    
+    /// Service for switching audio devices.
+    /// 
+    /// This dependency is used to perform the actual audio device switching.
+    private let audioSwitcher: AudioSwitching
+    
+    /// User preferences.
+    /// 
+    /// This dependency is used to access user preferences, such as the target microphone and fallback microphone settings.
+    private let preferences: PreferenceManaging
+    
+    /// Manager for user notifications.
+    /// 
+    /// This dependency is used to send notifications to the user about audio device switching events.
+    private var notificationManager: NotificationManaging?
+    
+    // MARK: - Initialization
+    
+    /// Initialize a new switch controller.
+    /// 
     /// - Parameters:
-    ///   - lidMonitor: The lid state monitoring component
-    ///   - displayMonitor: The display monitoring component
-    ///   - audioDeviceMonitor: The audio device monitoring component
-    ///   - audioSwitcher: The audio switching component
-    ///   - preferences: The preference management component
+    ///   - lidMonitor: Monitor for lid state changes.
+    ///   - displayMonitor: Monitor for display connection changes.
+    ///   - audioDeviceMonitor: Monitor for audio device changes.
+    ///   - audioSwitcher: Service for switching audio devices.
+    ///   - preferences: User preferences.
     public init(
         lidMonitor: LidStateMonitoring,
         displayMonitor: DisplayMonitoring,
@@ -38,516 +75,454 @@ public final class SwitchController: SwitchControlling {
         self.audioDeviceMonitor = audioDeviceMonitor
         self.audioSwitcher = audioSwitcher
         self.preferences = preferences
-        logger.debug("Initializing SwitchController")
+        
+        logger.debug("SwitchController initialized")
     }
     
-    /// Set the notification manager for user feedback
-    /// - Parameter manager: The notification manager instance
-    public func setNotificationManager(_ manager: NotificationManaging) {
-        self.notificationManager = manager
+    /// Set the notification manager.
+    /// 
+    /// - Parameter notificationManager: Manager for user notifications.
+    public func setNotificationManager(_ notificationManager: NotificationManaging) {
+        self.notificationManager = notificationManager
+        logger.debug("NotificationManager set")
     }
-
-    /// Start the controller and perform initial evaluation
-    public func start() {
-        logger.info("Starting SwitchController monitoring.")
-        // Perform an initial evaluation
-        evaluateAndSwitch()
-    }
-
-    /// Start monitoring all relevant state changes
-    public func startMonitoring() {
-        logger.debug("Starting monitoring")
+    
+    // MARK: - SwitchControlling Conformance
+    
+    /// Start the controller and perform initial evaluation.
+    /// 
+    /// This method starts the controller and performs an initial evaluation of the current conditions to determine if an audio device switch is needed.
+    /// 
+    /// - Throws: `SwitchControllerError` if an error occurs during startup.
+    public func start() throws {
+        logger.info("Starting SwitchController")
         
-        // Set up lid state change handler
-        lidMonitor.onLidStateChange = { [weak self] isOpen in
-            guard let self = self else { return }
-            self.logger.info("Lid state changed: \(isOpen ? "open" : "closed")")
-            self.evaluateAndSwitch()
+        try startMonitoringInternal()
+        _ = try evaluateAndSwitchInternal()
+    }
+    
+    /// Evaluate current conditions and switch audio devices if necessary.
+    /// 
+    /// This method evaluates the current conditions and switches audio devices if necessary.
+    /// 
+    /// - Returns: `true` if an audio device switch occurred, `false` otherwise.
+    /// - Throws: `SwitchControllerError` if an error occurs during evaluation and switching.
+    public func evaluateAndSwitch() throws -> Bool {
+        do {
+            return try evaluateAndSwitchInternal()
+        } catch {
+            logger.error("Error during evaluation and switching: \(error.localizedDescription)")
+            throw error
         }
-        
-        // Set up display connection change handler
-        displayMonitor.onDisplayConnectionChange = { [weak self] isConnected in
-            guard let self = self else { return }
-            self.logger.info("Display connection changed: \(isConnected ? "connected" : "disconnected")")
-            self.evaluateAndSwitch()
-        }
-        
-        // Start individual monitors
-        lidMonitor.startMonitoring()
-        displayMonitor.startMonitoring()
-        audioDeviceMonitor.startMonitoring()
-        
-        // Perform an initial evaluation
-        evaluateAndSwitch()
     }
-
-    /// Stop monitoring all state changes
+    
+    /// Start monitoring all relevant state changes.
+    /// 
+    /// This method starts monitoring all relevant state changes, including lid state, display connections, and audio devices.
+    /// 
+    /// - Throws: `SwitchControllerError` if an error occurs during monitoring.
+    public func startMonitoring() throws {
+        try startMonitoringInternal()
+    }
+    
+    /// Stop monitoring all state changes.
+    /// 
+    /// This method stops monitoring all state changes.
     public func stopMonitoring() {
-        logger.debug("Stopping monitoring")
+        logger.info("Stopping all monitors")
         
         lidMonitor.stopMonitoring()
         displayMonitor.stopMonitoring()
         audioDeviceMonitor.stopMonitoring()
         
-        // Remove callbacks
-        lidMonitor.onLidStateChange = nil
-        displayMonitor.onDisplayConnectionChange = nil
+        logger.debug("All monitors stopped")
     }
-
-    /// Evaluate current conditions and switch audio devices if necessary
-    /// - Returns: Boolean indicating if a switch occurred
-    @discardableResult
-    public func evaluateAndSwitch() -> Bool {
-        // Get current state
+    
+    // MARK: - Internal Implementation
+    
+    /// Internal implementation that can throw errors.
+    private func startMonitoringInternal() throws {
+        logger.info("Starting all monitors")
+        
+        // Set up lid state change handler
+        lidMonitor.onLidStateChange = { [weak self] isOpen in
+            guard let self = self else { return }
+            self.handleLidStateChange(isOpen: isOpen)
+        }
+        
+        // Set up display connection change handler
+        displayMonitor.onDisplayConnectionChange = { [weak self] isConnected in
+            guard let self = self else { return }
+            self.handleDisplayConnectionChange(isConnected: isConnected)
+        }
+        
+        // Start individual monitors
+        do {
+            try lidMonitor.startMonitoring()
+            logger.debug("Lid state monitor started successfully")
+        } catch {
+            logger.error("Failed to start lid state monitor: \(error.localizedDescription)")
+            notificationManager?.sendNotification(
+                title: "Monitoring Error",
+                body: "Could not start lid state monitoring: \(error.localizedDescription)"
+            )
+            throw SwitchControllerError.monitoringFailure(error.localizedDescription)
+        }
+        
+        displayMonitor.startMonitoring()
+        logger.debug("Display monitor started successfully")
+        
+        audioDeviceMonitor.startMonitoring()
+        logger.debug("Audio device monitor started successfully")
+    }
+    
+    /// Internal implementation that can throw errors.
+    private func evaluateAndSwitchInternal() throws -> Bool {
         let lidClosed = !lidMonitor.isLidOpen
         let externalDisplayConnected = displayMonitor.isExternalDisplayConnected
         
-        print("Evaluating conditions - Lid closed: \(lidClosed), External display: \(externalDisplayConnected)")
+        logger.debug("Evaluating conditions: Lid \(lidClosed ? "closed" : "open"), External display \(externalDisplayConnected ? "connected" : "disconnected")")
         
-        // Get target microphone UID from preferences
+        // Check if we should switch to target microphone
+        if lidClosed && externalDisplayConnected {
+            logger.info("Conditions met for switching to target microphone")
+            return try switchToTargetMicrophone()
+        }
+        
+        // Check if we should revert to fallback microphone
+        if !lidClosed && preferences.revertToFallbackOnLidOpen && fallbackMicrophoneUID != nil {
+            logger.info("Conditions met for reverting to fallback microphone")
+            return try revertToFallbackMicrophone()
+        }
+        
+        logger.debug("No audio device switching needed")
+        return false
+    }
+    
+    /// Switch to the target microphone.
+    /// 
+    /// This method switches to the target microphone based on the current conditions.
+    /// 
+    /// - Returns: `true` if the switch was successful, `false` otherwise.
+    /// - Throws: `SwitchControllerError` if an error occurs during switching.
+    private func switchToTargetMicrophone() throws -> Bool {
+        // Get the target microphone UID from preferences
         guard let targetUID = preferences.targetMicrophoneUID else {
-            print("No target microphone set in preferences. Skipping evaluation.")
+            logger.warning("No target microphone configured in preferences")
             return false
         }
         
-        // Get available devices
-        let availableDevices = audioDeviceMonitor.availableInputDevices
+        // Get the current default device to store as fallback
+        switch audioSwitcher.getDefaultInputDeviceID() {
+        case .success(let deviceID):
+            fallbackMicrophoneID = deviceID
+            let availableDevices = audioDeviceMonitor.availableInputDevices
+            fallbackMicrophoneUID = availableDevices.first(where: { $0.id == deviceID })?.uid
+            logger.debug("Stored fallback microphone ID: \(deviceID)")
+        case .failure(let error):
+            logger.error("Could not get current default device: \(error.localizedDescription)")
+            notificationManager?.sendNotification(
+                title: "Device Query Failed",
+                body: "Could not determine current audio device"
+            )
+            throw SwitchControllerError.audioSwitchingFailure(error.localizedDescription)
+        }
         
-        // Find target device in available devices
+        // Find the target device in available devices
+        let availableDevices = audioDeviceMonitor.availableInputDevices
         guard let targetDevice = availableDevices.first(where: { $0.uid == targetUID }) else {
-            print("⚠️ Target microphone not found in available devices. UID: \(targetUID)")
-            print("Available devices: \(availableDevices.map { "\($0.name) (UID: \($0.uid))" }.joined(separator: ", "))")
-            
-            // Notify user that target device is not available
+            logger.warning("Target microphone with UID \(targetUID) not found in available devices")
+            return false
+        }
+        
+        // Check if the target device is already the default
+        switch audioSwitcher.getDefaultInputDeviceID() {
+        case .success(let currentDeviceID):
+            if currentDeviceID == targetDevice.id {
+                logger.info("Target microphone is already the default device")
+                return false
+            }
+        case .failure(let error):
+            logger.error("Could not get current default device: \(error.localizedDescription)")
+        }
+        
+        // Switch to target device
+        logger.info("Switching to target microphone: \(targetDevice.name)")
+        switch audioSwitcher.setDefaultInputDevice(uid: targetUID) {
+        case .success:
+            logger.info("Successfully switched to target microphone: \(targetDevice.name)")
+            notificationManager?.sendNotification(
+                title: "Microphone Switched",
+                body: "Now using \(targetDevice.name)"
+            )
+            return true
+        case .failure(let error):
+            logger.error("Failed to switch to target microphone: \(error.localizedDescription)")
             notificationManager?.sendNotification(
                 title: "Switch Failed",
-                body: "Target microphone not available"
+                body: "Could not switch to \(targetDevice.name)"
+            )
+            throw SwitchControllerError.audioSwitchingFailure(error.localizedDescription)
+        }
+    }
+    
+    /// Revert to the fallback microphone.
+    /// 
+    /// This method reverts to the fallback microphone based on the current conditions.
+    /// 
+    /// - Returns: `true` if the revert was successful, `false` otherwise.
+    /// - Throws: `SwitchControllerError` if an error occurs during reverting.
+    private func revertToFallbackMicrophone() throws -> Bool {
+        // Check if we have a fallback device stored
+        guard let fallbackUID = fallbackMicrophoneUID else {
+            logger.warning("No fallback microphone available")
+            return false
+        }
+        
+        // Find the fallback device in available devices
+        let availableDevices = audioDeviceMonitor.availableInputDevices
+        guard let fallbackDevice = availableDevices.first(where: { $0.uid == fallbackUID }) else {
+            logger.warning("Fallback microphone not found in available devices")
+            return false
+        }
+        
+        // Check if the fallback device is already the default
+        switch audioSwitcher.getDefaultInputDeviceID() {
+        case .success(let currentDeviceID):
+            if currentDeviceID == fallbackDevice.id {
+                logger.info("Fallback microphone is already the default device")
+                return false
+            }
+        case .failure(let error):
+            logger.error("Could not get current default device: \(error.localizedDescription)")
+        }
+        
+        // Switch to fallback device
+        logger.info("Reverting to fallback microphone: \(fallbackDevice.name)")
+        switch audioSwitcher.setDefaultInputDevice(uid: fallbackUID) {
+        case .success:
+            logger.info("Successfully reverted to fallback microphone: \(fallbackDevice.name)")
+            notificationManager?.sendNotification(
+                title: "Microphone Reverted",
+                body: "Now using \(fallbackDevice.name)"
+            )
+            return true
+        case .failure(let error):
+            logger.error("Failed to revert to fallback microphone: \(error.localizedDescription)")
+            notificationManager?.sendNotification(
+                title: "Revert Failed",
+                body: "Could not revert to \(fallbackDevice.name)"
+            )
+            throw SwitchControllerError.audioSwitchingFailure(error.localizedDescription)
+        }
+    }
+    
+    // MARK: - Event Handlers
+    
+    /// Handles lid state changes.
+    /// 
+    /// This method is called when the lid state changes, and it evaluates if an audio device switch is needed.
+    private func handleLidStateChange(isOpen: Bool) {
+        logger.info("Lid state changed: \(isOpen ? "Open" : "Closed")")
+        logger.info("External display: \(self.displayMonitor.isExternalDisplayConnected ? "Connected" : "Disconnected")")
+        
+        // Evaluate if we need to switch audio devices
+        do {
+            let switchOccurred = try evaluateAndSwitchInternal()
+            logger.debug("Audio switch evaluation result: \(switchOccurred ? "switched" : "no change needed")")
+        } catch {
+            logger.error("Error evaluating and switching audio devices: \(error.localizedDescription)")
+        }
+    }
+    
+    /// Handles display connection changes.
+    /// 
+    /// This method is called when the display connection changes, and it evaluates if an audio device switch is needed.
+    private func handleDisplayConnectionChange(isConnected: Bool) {
+        logger.info("Display connection changed: \(isConnected ? "Connected" : "Disconnected")")
+        logger.info("Lid state: \(self.lidMonitor.isLidOpen ? "Open" : "Closed")")
+        
+        // Evaluate if we need to switch audio devices
+        do {
+            let switchOccurred = try evaluateAndSwitchInternal()
+            logger.debug("Audio switch evaluation result: \(switchOccurred ? "switched" : "no change needed")")
+        } catch {
+            logger.error("Error evaluating and switching audio devices: \(error.localizedDescription)")
+        }
+    }
+    
+    // MARK: - Public Diagnostic Methods
+    
+    /// Force a switch to the target microphone regardless of conditions.
+    /// 
+    /// This method forces a switch to the target microphone, regardless of the current conditions.
+    /// 
+    /// - Returns: `true` if the switch was successful, `false` otherwise.
+    /// - Throws: `SwitchControllerError` if an error occurs during switching.
+    @discardableResult
+    public func forceAudioDeviceSwitch() throws -> Bool {
+        logger.info("Force switch requested")
+        
+        // Get the target microphone UID from preferences
+        guard let targetUID = preferences.targetMicrophoneUID else {
+            logger.error("No target microphone configured")
+            notificationManager?.sendNotification(
+                title: "Switch Failed",
+                body: "No target microphone configured in preferences"
             )
             return false
         }
         
-        // Get current default device
-        guard let currentDeviceID = audioSwitcher.getDefaultInputDeviceID() else {
-            print("⚠️ Failed to get current default input device")
+        // Find the target device in available devices
+        let availableDevices = audioDeviceMonitor.availableInputDevices
+        guard let targetDevice = availableDevices.first(where: { $0.uid == targetUID }) else {
+            logger.error("Target microphone not found in available devices")
+            notificationManager?.sendNotification(
+                title: "Switch Failed",
+                body: "Target microphone not found or disconnected"
+            )
             return false
         }
         
-        // Log current device info
-        if let currentDevice = availableDevices.first(where: { $0.id == currentDeviceID }) {
-            print("Current input device: \(currentDevice.name) (ID: \(currentDevice.id), UID: \(currentDevice.uid))")
-        } else {
-            print("Current input device ID: \(currentDeviceID) (not found in available devices)")
+        // Store current device as fallback
+        switch audioSwitcher.getDefaultInputDeviceID() {
+        case .success(let deviceID):
+            fallbackMicrophoneID = deviceID
+            fallbackMicrophoneUID = availableDevices.first(where: { $0.id == deviceID })?.uid
+            logger.debug("Stored fallback microphone: \(deviceID)")
+        case .failure(let error):
+            logger.error("Could not get current device for fallback: \(error.localizedDescription)")
         }
         
-        // Check if we need to switch to target microphone
-        // Condition: Lid closed with external display connected
-        let shouldSwitchToTarget = lidClosed && externalDisplayConnected
-        
-        // Check if we need to revert to internal microphone
-        // Condition: (Lid open AND revert preference enabled) OR (no external display AND revert preference enabled)
-        let shouldRevertToInternal = ((!lidClosed) && preferences.revertOnLidOpen) || (!externalDisplayConnected && preferences.revertOnLidOpen)
-        
-        // Debug info
-        print("Should switch to target: \(shouldSwitchToTarget)")
-        print("Should revert to internal: \(shouldRevertToInternal)")
-        
-        // Store current device as fallback if we're about to switch
-        if shouldSwitchToTarget && currentDeviceID != targetDevice.id {
-            if let currentDevice = availableDevices.first(where: { $0.id == currentDeviceID }) {
-                fallbackMicrophoneUID = currentDevice.uid
-                fallbackMicrophoneID = currentDevice.id
-                print("Stored fallback device: \(currentDevice.name) (ID: \(currentDevice.id))")
-            }
-        }
-        
-        // Perform the switch if needed
-        if shouldSwitchToTarget && currentDeviceID != targetDevice.id {
-            print("Switching to target microphone: \(targetDevice.name)")
-            let success = audioSwitcher.setDefaultInputDevice(deviceID: targetDevice.id)
-            
-            if success {
-                print("✅ Successfully switched to \(targetDevice.name)")
-                notificationManager?.sendNotification(
-                    title: "Audio Input Changed",
-                    body: "Switched to \(targetDevice.name)"
-                )
-                return true
-            } else {
-                print("❌ Failed to switch to \(targetDevice.name)")
-                notificationManager?.sendNotification(
-                    title: "Switch Failed",
-                    body: "Could not switch to \(targetDevice.name)"
-                )
-                
-                // Clear fallback if switch failed
-                fallbackMicrophoneUID = nil
-                fallbackMicrophoneID = nil
-                return false
-            }
-        } else if shouldRevertToInternal && fallbackMicrophoneID != nil && currentDeviceID != fallbackMicrophoneID {
-            // Only revert if we have a fallback device stored
-            if let fallbackID = fallbackMicrophoneID,
-               let fallbackDevice = availableDevices.first(where: { $0.id == fallbackID }) {
-                print("Reverting to fallback microphone: \(fallbackDevice.name)")
-                let success = audioSwitcher.setDefaultInputDevice(deviceID: fallbackID)
-                
-                if success {
-                    print("✅ Successfully reverted to \(fallbackDevice.name)")
-                    notificationManager?.sendNotification(
-                        title: "Audio Input Changed",
-                        body: "Reverted to \(fallbackDevice.name)"
-                    )
-                    
-                    // Clear fallback state after successful revert
-                    fallbackMicrophoneUID = nil
-                    fallbackMicrophoneID = nil
-                    return true
-                } else {
-                    print("❌ Failed to revert to \(fallbackDevice.name)")
-                    notificationManager?.sendNotification(
-                        title: "Revert Failed",
-                        body: "Could not revert to \(fallbackDevice.name)"
-                    )
-                    return false
-                }
-            } else {
-                print("⚠️ No valid fallback device found for reverting")
-                return false
-            }
-        } else {
-            print("No audio device switch needed")
-            return false
+        // Switch to target device
+        switch audioSwitcher.setDefaultInputDevice(uid: targetUID) {
+        case .success:
+            logger.info("Successfully switched to target microphone: \(targetDevice.name)")
+            notificationManager?.sendNotification(
+                title: "Microphone Switched",
+                body: "Now using \(targetDevice.name)"
+            )
+            return true
+        case .failure(let error):
+            logger.error("Failed to switch to target microphone: \(error.localizedDescription)")
+            notificationManager?.sendNotification(
+                title: "Force Switch Failed",
+                body: "Could not switch to \(targetDevice.name)"
+            )
+            throw SwitchControllerError.audioSwitchingFailure(error.localizedDescription)
         }
     }
-
-    /// Diagnose audio device switching issues
-    /// Logs comprehensive diagnostic information about the current state
+    
+    /// Force a revert to the fallback microphone.
+    /// 
+    /// This method forces a revert to the fallback microphone, regardless of the current conditions.
+    /// 
+    /// - Returns: `true` if the revert was successful, `false` otherwise.
+    /// - Throws: `SwitchControllerError` if an error occurs during reverting.
+    @discardableResult
+    public func forceRevertToFallback() throws -> Bool {
+        logger.info("Force revert requested")
+        
+        // Check if we have a fallback device stored
+        guard let fallbackUID = fallbackMicrophoneUID else {
+            logger.error("No fallback microphone available")
+            notificationManager?.sendNotification(
+                title: "Revert Failed",
+                body: "No fallback microphone available"
+            )
+            return false
+        }
+        
+        // Find the fallback device in available devices
+        let availableDevices = audioDeviceMonitor.availableInputDevices
+        guard let fallbackDevice = availableDevices.first(where: { $0.uid == fallbackUID }) else {
+            logger.error("Fallback microphone not found in available devices")
+            notificationManager?.sendNotification(
+                title: "Revert Failed",
+                body: "Fallback microphone not found or disconnected"
+            )
+            return false
+        }
+        
+        // Switch to fallback device
+        switch audioSwitcher.setDefaultInputDevice(uid: fallbackUID) {
+        case .success:
+            logger.info("Successfully reverted to fallback microphone: \(fallbackDevice.name)")
+            notificationManager?.sendNotification(
+                title: "Microphone Reverted",
+                body: "Now using \(fallbackDevice.name)"
+            )
+            return true
+        case .failure(let error):
+            logger.error("Failed to revert to fallback microphone: \(error.localizedDescription)")
+            notificationManager?.sendNotification(
+                title: "Revert Failed",
+                body: "Could not revert to \(fallbackDevice.name)"
+            )
+            throw SwitchControllerError.audioSwitchingFailure(error.localizedDescription)
+        }
+    }
+    
+    /// Diagnose audio device switching issues.
+    /// 
+    /// This method logs comprehensive diagnostic information about the current state, including the lid state, display connection, target microphone, and available devices.
     public func diagnoseAudioSwitchingIssues() {
         // Log current state
         let lidOpen = lidMonitor.isLidOpen
         let externalDisplayConnected = displayMonitor.isExternalDisplayConnected
         let targetMicUID = preferences.targetMicrophoneUID
         
-        print("\n\n========== MacDeviSwitch Diagnostic Information ==========")
-        print("TIMESTAMP: \(Date())")
-        print("\n--- CURRENT STATE ---")
-        print("• Lid open: \(lidOpen)")
-        print("• External display connected: \(externalDisplayConnected)")
-        print("• Target microphone UID: \(targetMicUID ?? "None")")
-        print("• Revert on lid open: \(preferences.revertOnLidOpen)")
-        print("• Fallback microphone UID: \(fallbackMicrophoneUID ?? "None")")
+        logger.info("Running diagnostic analysis")
+        logger.info("Current state: lid \(lidOpen ? "open" : "closed"), external display \(externalDisplayConnected ? "connected" : "disconnected"), target mic UID: \(targetMicUID ?? "not set")")
+        
+        // Notify the user that diagnostics are running
+        notificationManager?.sendNotification(
+            title: "Diagnostics Running",
+            body: "Checking audio switching configuration"
+        )
         
         // Log available devices
         let availableDevices = audioDeviceMonitor.availableInputDevices
-        print("\n--- AVAILABLE INPUT DEVICES ---")
-        if availableDevices.isEmpty {
-            print("• No input devices available!")
-        } else {
-            for device in availableDevices {
-                print("• \(device.name) (ID: \(device.id), UID: \(device.uid))")
-            }
-        }
+        logger.info("Available input devices: \(availableDevices.count)")
         
-        // Log current device
-        print("\n--- CURRENT INPUT DEVICE ---")
-        if let currentDeviceID = audioSwitcher.getDefaultInputDeviceID() {
-            if let currentDevice = availableDevices.first(where: { $0.id == currentDeviceID }) {
-                print("• Current input device: \(currentDevice.name) (ID: \(currentDevice.id), UID: \(currentDevice.uid))")
-            } else {
-                print("• Current input device ID: \(currentDeviceID) (not found in available devices)")
-            }
-        } else {
-            print("• Failed to get current default input device")
-        }
-        
-        // Check switching conditions
-        print("\n--- SWITCHING ANALYSIS ---")
-        
-        // Case 1: Lid closed with external display
-        if !lidOpen && externalDisplayConnected {
-            print("• Condition MATCHED: Lid closed with external display connected")
-            
-            // Check if we have a target microphone set
-            if let targetUID = targetMicUID {
-                print("• Target microphone set: \(targetUID)")
-                
-                // Find the target device in available devices
-                if let targetDevice = availableDevices.first(where: { $0.uid == targetUID }) {
-                    print("• Target microphone \(targetDevice.name) found in available devices")
-                    
-                    // Check if we're already using the target device
-                    if let currentDeviceID = audioSwitcher.getDefaultInputDeviceID(),
-                       targetDevice.id == currentDeviceID {
-                        print("• Already using target microphone \(targetDevice.name)")
-                        print("  → No switch needed")
-                    } else {
-                        print("• Not currently using target microphone")
-                        print("  → Switch should occur but didn't")
-                        print("  → Check if SwitchController.evaluateAndSwitch() was called")
-                    }
-                } else {
-                    print("• Target microphone with UID \(targetUID) NOT found in available devices")
-                    print("  → This is preventing the switch")
-                    print("  → Available UIDs: \(availableDevices.map { $0.uid }.joined(separator: ", "))")
-                }
-            } else {
-                print("• No target microphone set")
-                print("  → This is preventing the switch")
-                print("  → Set a target microphone in preferences")
-            }
-        } else {
-            print("• Condition NOT MATCHED: Lid closed with external display connected")
-            if lidOpen {
-                print("  → Lid is open")
-            }
-            if !externalDisplayConnected {
-                print("  → No external display connected")
-            }
-        }
-        
-        // Case 2: Lid opened with fallback device
-        if lidOpen && preferences.revertOnLidOpen && fallbackMicrophoneUID != nil {
-            print("\n• Condition MATCHED: Lid open with fallback device available")
-            
-            if let fallbackUID = fallbackMicrophoneUID, 
-               let fallbackDevice = availableDevices.first(where: { $0.uid == fallbackUID }) {
-                print("• Fallback microphone \(fallbackDevice.name) found in available devices")
-                
-                // Check if we're currently using the target device
-                if let currentDeviceID = audioSwitcher.getDefaultInputDeviceID(),
-                   let targetUID = targetMicUID,
-                   let targetDevice = availableDevices.first(where: { $0.uid == targetUID }),
-                   targetDevice.id == currentDeviceID {
-                    print("• Currently using target microphone \(targetDevice.name)")
-                    print("  → Revert should occur but didn't")
-                    print("  → Check if SwitchController.evaluateAndSwitch() was called")
-                } else {
-                    print("• Not using target device, not reverting")
-                }
-            } else {
-                print("• Fallback microphone not found in available devices")
-                print("  → This is preventing the revert")
-            }
-        }
-        
-        print("\n--- MONITORING STATUS ---")
-        print("• LidStateMonitor isMonitoring: \(lidMonitor is LidStateMonitoring ? "Active" : "Unknown")")
-        print("• DisplayMonitor isMonitoring: \(displayMonitor is DisplayMonitoring ? "Active" : "Unknown")")
-        
-        print("\n==========================================================\n")
-    }
-
-    /// Force a switch to the target microphone for testing purposes
-    /// - Returns: Boolean indicating if the switch was successful
-    public func forceAudioDeviceSwitch() -> Bool {
-        print("\n\n========== FORCE AUDIO DEVICE SWITCH TEST ==========")
-        print("TIMESTAMP: \(Date())")
-        
-        // Get target microphone UID from preferences
-        guard let targetUID = preferences.targetMicrophoneUID else {
-            print("❌ ERROR: No target microphone set in preferences")
-            print("   Please set a target microphone in the app preferences")
-            print("=================================================\n")
-            
-            notificationManager?.sendNotification(
-                title: "Switch Failed",
-                body: "No target microphone set in preferences"
-            )
-            return false
-        }
-        
-        print("• Target microphone UID: \(targetUID)")
-        
-        // Get available devices
-        let availableDevices = audioDeviceMonitor.availableInputDevices
-        print("• Available input devices: \(availableDevices.count)")
         for device in availableDevices {
-            print("  - \(device.name) (ID: \(device.id), UID: \(device.uid))")
+            logger.info("Device: \(device.name), ID: \(device.id), UID: \(device.uid)")
         }
         
-        // Find target device in available devices
-        guard let targetDevice = availableDevices.first(where: { $0.uid == targetUID }) else {
-            print("❌ ERROR: Target microphone not found in available devices")
-            print("   Available UIDs: \(availableDevices.map { $0.uid }.joined(separator: ", "))")
-            print("=================================================\n")
-            
-            notificationManager?.sendNotification(
-                title: "Switch Failed",
-                body: "Target microphone not found in available devices"
-            )
-            return false
-        }
-        
-        print("• Found target device: \(targetDevice.name) (ID: \(targetDevice.id))")
-        
-        // Get current default device
-        guard let currentDeviceID = audioSwitcher.getDefaultInputDeviceID() else {
-            print("❌ ERROR: Failed to get current default input device")
-            print("=================================================\n")
-            
-            notificationManager?.sendNotification(
-                title: "Switch Failed",
-                body: "Failed to get current default input device"
-            )
-            return false
-        }
-        
-        if let currentDevice = availableDevices.first(where: { $0.id == currentDeviceID }) {
-            print("• Current input device: \(currentDevice.name) (ID: \(currentDevice.id), UID: \(currentDevice.uid))")
-            
-            // Store as fallback
-            fallbackMicrophoneUID = currentDevice.uid
-            fallbackMicrophoneID = currentDevice.id
-            print("• Stored fallback device: \(currentDevice.name)")
-        } else {
-            print("• Current input device ID: \(currentDeviceID) (not found in available devices)")
-        }
-        
-        // Check if already using target device
-        if currentDeviceID == targetDevice.id {
-            print("✓ Already using target microphone \(targetDevice.name)")
-            print("=================================================\n")
-            return true
-        }
-        
-        // Attempt to switch
-        print("• Attempting to switch to \(targetDevice.name)...")
-        let success = audioSwitcher.setDefaultInputDevice(deviceID: targetDevice.id)
-        
-        if success {
-            print("✓ SUCCESS: Switched to \(targetDevice.name)")
-            
-            // Verify the switch
-            if let newDefaultID = audioSwitcher.getDefaultInputDeviceID(),
-               let newDevice = availableDevices.first(where: { $0.id == newDefaultID }) {
-                print("• Verified new default device: \(newDevice.name) (ID: \(newDevice.id))")
+        // Check if target device is available
+        if let targetUID = targetMicUID {
+            if availableDevices.contains(where: { $0.uid == targetUID }) {
+                logger.info("Target microphone is available")
             } else {
-                print("⚠️ WARNING: Could not verify new default device")
+                logger.warning("Target microphone is NOT available")
+                notificationManager?.sendNotification(
+                    title: "Diagnostic Warning",
+                    body: "Target microphone is not available"
+                )
             }
-            
-            notificationManager?.sendNotification(
-                title: "Audio Input Changed",
-                body: "Switched to \(targetDevice.name)"
-            )
         } else {
-            print("❌ ERROR: Failed to switch to \(targetDevice.name)")
-            
-            // Clear fallback if switch failed
-            fallbackMicrophoneUID = nil
-            fallbackMicrophoneID = nil
-            
+            logger.warning("No target microphone configured")
             notificationManager?.sendNotification(
-                title: "Switch Failed",
-                body: "Could not switch to \(targetDevice.name)"
+                title: "Diagnostic Warning",
+                body: "No target microphone configured"
             )
         }
         
-        print("=================================================\n")
-        return success
-    }
-    
-    /// Force a revert to the fallback microphone for testing purposes
-    /// - Returns: Boolean indicating if the revert was successful
-    public func forceRevertToFallback() -> Bool {
-        print("\n\n========== FORCE REVERT TO FALLBACK TEST ==========")
-        print("TIMESTAMP: \(Date())")
-        
-        // Check if we have a fallback device stored
-        guard let fallbackID = fallbackMicrophoneID else {
-            print("❌ ERROR: No fallback device stored")
-            print("   You must first switch to a target device to store a fallback")
-            print("=================================================\n")
-            
-            notificationManager?.sendNotification(
-                title: "Revert Failed",
-                body: "No fallback device stored"
-            )
-            return false
-        }
-        
-        print("• Fallback microphone ID: \(fallbackID)")
-        
-        // Get available devices
-        let availableDevices = audioDeviceMonitor.availableInputDevices
-        print("• Available input devices: \(availableDevices.count)")
-        
-        // Check if fallback device is still available
-        guard let fallbackDevice = availableDevices.first(where: { $0.id == fallbackID }) else {
-            print("❌ ERROR: Fallback device no longer available")
-            print("   Available devices: \(availableDevices.map { $0.name }.joined(separator: ", "))")
-            print("=================================================\n")
-            
-            // Clear fallback state since device is no longer available
-            fallbackMicrophoneUID = nil
-            fallbackMicrophoneID = nil
-            
-            notificationManager?.sendNotification(
-                title: "Revert Failed",
-                body: "Fallback microphone no longer available"
-            )
-            return false
-        }
-        
-        print("• Found fallback device: \(fallbackDevice.name) (ID: \(fallbackDevice.id))")
-        
-        // Get current default device
-        guard let currentDeviceID = audioSwitcher.getDefaultInputDeviceID() else {
-            print("❌ ERROR: Failed to get current default input device")
-            print("=================================================\n")
-            
-            notificationManager?.sendNotification(
-                title: "Revert Failed",
-                body: "Failed to get current default input device"
-            )
-            return false
-        }
-        
-        if let currentDevice = availableDevices.first(where: { $0.id == currentDeviceID }) {
-            print("• Current input device: \(currentDevice.name) (ID: \(currentDevice.id), UID: \(currentDevice.uid))")
-        } else {
-            print("• Current input device ID: \(currentDeviceID) (not found in available devices)")
-        }
-        
-        // Check if already using fallback device
-        if currentDeviceID == fallbackID {
-            print("✓ Already using fallback microphone \(fallbackDevice.name)")
-            print("=================================================\n")
-            return true
-        }
-        
-        // Attempt to switch back to fallback device
-        print("• Attempting to revert to \(fallbackDevice.name)...")
-        let success = audioSwitcher.setDefaultInputDevice(deviceID: fallbackID)
-        
-        if success {
-            print("✓ SUCCESS: Reverted to \(fallbackDevice.name)")
-            
-            // Verify the switch
-            if let newDefaultID = audioSwitcher.getDefaultInputDeviceID(),
-               let newDevice = availableDevices.first(where: { $0.id == newDefaultID }) {
-                print("• Verified new default device: \(newDevice.name) (ID: \(newDevice.id))")
+        // Check current default device
+        switch audioSwitcher.getDefaultInputDeviceID() {
+        case .success(let deviceID):
+            if let device = availableDevices.first(where: { $0.id == deviceID }) {
+                logger.info("Current default device: \(device.name)")
             } else {
-                print("⚠️ WARNING: Could not verify new default device")
+                logger.warning("Current default device (ID: \(deviceID)) not found in available devices")
             }
-            
-            // Clear fallback state after successful revert
-            fallbackMicrophoneUID = nil
-            fallbackMicrophoneID = nil
-            
-            notificationManager?.sendNotification(
-                title: "Audio Input Changed",
-                body: "Reverted to \(fallbackDevice.name)"
-            )
-        } else {
-            print("❌ ERROR: Failed to revert to \(fallbackDevice.name)")
-            
-            notificationManager?.sendNotification(
-                title: "Revert Failed",
-                body: "Could not revert to \(fallbackDevice.name)"
-            )
+        case .failure(let error):
+            logger.error("Could not get current default device: \(error.localizedDescription)")
         }
         
-        print("=================================================\n")
-        return success
+        notificationManager?.sendNotification(
+            title: "Diagnostics Complete",
+            body: "Check logs for detailed information"
+        )
     }
 }

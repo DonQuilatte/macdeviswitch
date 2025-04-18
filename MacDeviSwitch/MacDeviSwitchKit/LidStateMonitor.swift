@@ -3,21 +3,57 @@ import IOKit
 import IOKit.pwr_mgt
 import os.log
 
+/// Errors that can occur during lid state monitoring
+public enum LidStateMonitorError: Error, LocalizedError {
+    /// Failed to register for system power notifications
+    case registrationFailed
+    /// Notification port is nil after registration
+    case notificationPortNil
+    /// Failed to deregister for system power notifications
+    case deregistrationFailed
+    /// Failed to close root power domain port
+    case serviceCloseFailed
+    /// Failed to query lid state
+    case queryFailed
+    
+    public var errorDescription: String? {
+        switch self {
+        case .registrationFailed:
+            return "Failed to register for system power notifications"
+        case .notificationPortNil:
+            return "Notification port is nil after registration"
+        case .deregistrationFailed:
+            return "Failed to deregister for system power notifications"
+        case .serviceCloseFailed:
+            return "Failed to close root power domain port"
+        case .queryFailed:
+            return "Failed to query lid state"
+        }
+    }
+}
+
+/// Detects lid open/close events via IOKit.
 public final class LidStateMonitor: LidStateMonitoring {
-    fileprivate let logger = Logger(subsystem: "com.yourcompany.macdeviswitchkit", category: "LidStateMonitor") // Replace with your bundle ID
+    fileprivate let logger = Logger(subsystem: "via.MacDeviSwitch.kit", category: "LidStateMonitor")
     fileprivate var rootPort: io_connect_t = 0
     private var notificationPort: IONotificationPortRef?
     private var notifier: io_object_t = 0
 
-    // Current state - initialized by querying IOKit
+    /// Indicates whether the lid is currently open.
     public private(set) var isLidOpen: Bool = true // Default assumption, immediately queried
     
-    // Callback for lid state changes
+    /// Callback for lid state changes.
+    ///
+    /// This closure is called whenever the lid state changes.
+    /// - Parameter isOpen: `true` if the lid is open, `false` otherwise.
     public var onLidStateChange: ((Bool) -> Void)?
     
     // Monitoring state
     private var isMonitoring: Bool = false
 
+    /// Initializes a new `LidStateMonitor` instance.
+    ///
+    /// This initializer queries the initial lid state immediately.
     public init() {
         logger.debug("Initializing LidStateMonitor")
         // Query initial state immediately
@@ -29,13 +65,20 @@ public final class LidStateMonitor: LidStateMonitoring {
         stopMonitoring()
     }
     
-    public func startMonitoring() {
+    /// Starts monitoring lid state changes.
+    ///
+    /// This method sets up the necessary IOKit notifications to detect lid state changes.
+    /// - Throws: `LidStateMonitorError` if setup fails.
+    public func startMonitoring() throws {
         guard !isMonitoring else { return }
         logger.debug("Starting lid state monitoring")
-        setupPowerNotification()
+        try setupPowerNotification()
         isMonitoring = true
     }
     
+    /// Stops monitoring lid state changes.
+    ///
+    /// This method tears down the IOKit notifications and stops monitoring lid state changes.
     public func stopMonitoring() {
         guard isMonitoring else { return }
         logger.debug("Stopping lid state monitoring")
@@ -43,19 +86,14 @@ public final class LidStateMonitor: LidStateMonitoring {
         isMonitoring = false
     }
 
-    private func setupPowerNotification() {
+    private func setupPowerNotification() throws {
         rootPort = IORegisterForSystemPower(Unmanaged.passUnretained(self).toOpaque(), &notificationPort, powerCallback, &notifier)
         if rootPort == 0 {
-            logger.error("Failed to register for system power notifications.")
-            return
+            throw LidStateMonitorError.registrationFailed
         }
 
         guard let notificationPort = notificationPort else {
-            logger.error("Notification port is nil after registration.")
-            // Cleanup if registration partially succeeded
-            if rootPort != 0 { IOServiceClose(rootPort); self.rootPort = 0 }
-            if notifier != 0 { IOObjectRelease(notifier); self.notifier = 0 }
-            return
+            throw LidStateMonitorError.notificationPortNil
         }
 
         // Add the notification port to the run loop
@@ -76,7 +114,7 @@ public final class LidStateMonitor: LidStateMonitoring {
         if notifier != 0 {
              // Deregister notification
             if kIOReturnSuccess != IODeregisterForSystemPower(&notifier) {
-                 logger.error("IODeregisterForSystemPower failed.")
+                logger.error("IODeregisterForSystemPower failed.")
             }
             IOObjectRelease(notifier)
             notifier = 0
@@ -165,9 +203,9 @@ private func powerCallback(refcon: UnsafeMutableRawPointer?, service: io_service
  }
 
 extension LidStateMonitor {
-    // Placeholder for actual lid state update logic
-    // This needs to differentiate between sleep and actual lid close if possible,
-    // or query the state directly.
+    /// Updates the internal lid state and notifies the `onLidStateChange` callback if the state changes.
+    ///
+    /// - Parameter isOpen: `true` if the lid is open, `false` otherwise.
     fileprivate func updateLidState(isOpen: Bool) {
         if self.isLidOpen != isOpen {
             logger.info("Lid state changed to: \(isOpen ? "Open" : "Closed")")
@@ -178,6 +216,8 @@ extension LidStateMonitor {
     }
 
     /// Queries the IOKit registry for the current clamshell (lid) state.
+    ///
+    /// This method updates the internal `isLidOpen` state and notifies the `onLidStateChange` callback if the state changes.
     fileprivate func queryAndUpdateLidState() {
         logger.debug("Querying current lid state...")
         let service = IOServiceGetMatchingService(kIOMainPortDefault, IOServiceMatching("IOPlatformExpertDevice"))

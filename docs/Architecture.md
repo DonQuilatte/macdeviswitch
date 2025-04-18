@@ -92,3 +92,17 @@ MacDeviSwitch follows a modular architecture with clear separation of concerns:
 - **Unit Tests**: Test individual components in isolation using mock implementations
 - **Integration Tests**: Test interactions between components
 - **Edge Case Tests**: Test failure scenarios and edge cases
+
+## Recent Improvements
+
+- Standardized bundle IDs (now `via.MacDeviSwitch` and `via.MacDeviSwitch.kit`)
+- Enhanced error handling using custom error types and Swift's Result type
+- Improved memory management and resource cleanup
+- Protocol definitions and property names standardized (e.g., `revertToFallbackOnLidOpen`)
+- Notification handling now includes permission checks and robust error handling
+
+## Documentation & Testing
+
+- DocC documentation is generated automatically on push to main
+- Test coverage ≥ 80% (unit, integration, edge cases)
+- All dependencies managed via SwiftPM and pinned in `Package.resolved`

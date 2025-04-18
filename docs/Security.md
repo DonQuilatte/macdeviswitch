@@ -54,6 +54,15 @@ The following security best practices are implemented in MacDeviSwitch:
 3. **Logging**: Sensitive information is not logged
 4. **Memory Management**: Proper memory management to prevent leaks and vulnerabilities
 
+## Recent Security & Privacy Improvements
+
+- All error types conform to LocalizedError for safer error reporting
+- APIs updated to use Result type for explicit error handling
+- Resource cleanup and weak self in closures to prevent leaks
+- No hard-coded secrets or third-party dependencies
+- Notification permissions checked before use
+- All sensitive user data stays local and is never transmitted externally
+
 ## Third-Party Dependencies
 
 MacDeviSwitch does not use any third-party dependencies, eliminating potential security risks from external code.

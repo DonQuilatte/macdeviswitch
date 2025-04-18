@@ -1,0 +1,107 @@
+# .windsurflocal
+
+# Windsurf Cascade Local Rules
+
+*Local rules that govern all Cascade AI interactions when the workspace is open.*
+
+## 1. Project Context Awareness
+
+- **Codebase Familiarity**: Cascade must scan open project structure before providing recommendations
+- **Style Consistency**: Match existing code style, naming conventions, and architecture patterns
+- **Technology Stack**: Respect established frameworks and libraries; don't suggest alternatives without clear benefits
+- **Project History**: Reference commit history and PRs when explaining code evolution
+
+## 2. Code Generation Standards
+
+- **Swift Best Practices**: Generate idiomatic Swift code following Apple's guidelines
+- **Error Handling**: Always include proper error handling in generated code snippets
+- **Memory Management**: Be explicit about memory management (ARC considerations, potential retain cycles)
+- **UI Code**: Add accessibility labels and identifiers to all UI elements
+- **Comments**: Include meaningful documentation comments (/// style) for public interfaces
+
+## 3. Project-Specific Patterns
+
+- **Architecture**: Follow MVVM architecture with Coordinator pattern for navigation
+- **Dependency Injection**: Use property injection with protocols for dependencies
+- **Reactive Programming**: Use Combine framework for reactive patterns
+- **State Management**: Implement unidirectional data flow with state reducers
+- **Testing**: Generate tests using the project's established testing patterns
+
+## 4. Local Configuration Integration
+
+- **Environment Variables**: Read from .env.local for environment-specific configuration
+- **Development Mode**: Respect DEBUG flag conditions in generated code
+- **Feature Flags**: Check WindsurfFeatureFlags.swift before implementing features
+- **Local Overrides**: Honor any local configuration that overrides global settings
+
+## 5. Workspace-Aware Assistance
+
+- **Open Files Context**: Consider currently open files when making suggestions
+- **Recent Changes**: Be aware of unsaved changes in the editor
+- **Terminal History**: Reference recent terminal commands when suggesting workflows
+- **Search History**: Use recent search queries to understand developer focus
+- **Breakpoints**: Consider active debugging contexts when explaining code
+
+## 6. Swift and SwiftUI Specializations
+
+- **SwiftUI Lifecycle**: Use proper lifecycle methods (@main, App, Scene, WindowGroup)
+- **Property Wrappers**: Use appropriate property wrappers (@State, @Binding, @ObservedObject)
+- **Previews**: Include SwiftUI previews with sample data for UI components
+- **Concurrency**: Use structured concurrency (async/await) over completion handlers
+- **Type Safety**: Leverage Swift's strong type system; avoid force unwrapping
+
+## 7. macOS-Specific Guidance
+
+- **AppKit Integration**: When interfacing with AppKit, follow established project patterns
+- **Window Management**: Use consistent window management strategies
+- **Menu Bar Items**: Follow project conventions for menu bar items and commands
+- **Keyboard Shortcuts**: Maintain consistent keyboard shortcut patterns
+- **System Integration**: Respect system-level privacy permissions and entitlements
+
+## 8. Documentation Generation
+
+- **DocC Format**: Generate documentation comments compatible with DocC
+- **Screenshots**: Include instructions for capturing relevant UI screenshots
+- **Architecture Diagrams**: Suggest updates to architecture diagrams when code changes
+- **User Guides**: Help maintain user-facing documentation when features change
+- **Release Notes**: Draft release notes based on conventional commits
+
+## 9. Performance Considerations
+
+- **Main Thread**: Flag potential main thread blocking operations
+- **Memory Leaks**: Highlight patterns that might cause memory leaks
+- **Energy Impact**: Suggest optimizations for operations that impact battery life
+- **Animation Performance**: Ensure animations maintain 60 FPS target
+- **Launch Time**: Consider impact on app startup time
+
+## 10. Security & Privacy Context
+
+- **Sensitive Data**: Identify code handling sensitive user data
+- **Input Validation**: Ensure all user inputs are properly validated
+- **Permission Usage**: Document reasons for permission requests
+- **Secure Storage**: Use appropriate secure storage methods for sensitive information
+- **Data Minimization**: Suggest ways to minimize data collection and storage
+
+## 11. Debugging & Development Support
+
+- **Debug Logs**: Include appropriate logging in development mode
+- **Diagnostics**: Suggest diagnostics for potential issues
+- **Testing Scenarios**: Propose test cases for edge conditions
+- **Profiling**: Recommend performance profiling for complex operations
+- **CI Integration**: Explain how changes might impact CI pipelines
+
+## 12. Local Command Integration
+
+- **Terminal Commands**: Suggest relevant windsurf CLI commands
+- **Build Scripts**: Include custom build script invocations
+- **Test Running**: Provide commands to run specific test suites
+- **Local Tools**: Integrate with project-specific tools and scripts
+- **Git Workflow**: Recommend appropriate git commands for current context
+
+## 13. Language & Communication
+
+- **Technical Terms**: Use project-specific terminology consistently
+- **Code References**: Use absolute file paths when referencing project files
+- **Step Sequences**: Provide numbered steps for multi-part implementations
+- **Implementation Options**: Present alternatives with clear trade-offs
+- **Learning Resources**: Link to relevant Swift/macOS documentation
