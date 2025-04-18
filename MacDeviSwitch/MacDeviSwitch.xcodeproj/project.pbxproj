@@ -67,6 +67,10 @@
 /* Begin PBXFileReference section */
 		920A75F42DB27ED90046E3A4 /* MacDeviSwitchKitTests */ = {isa = PBXFileReference; lastKnownFileType = folder; path = MacDeviSwitchKitTests; sourceTree = "<group>"; };
 		920A75F52DB281150046E3A4 /* TestPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TestPlan.xctestplan; sourceTree = "<group>"; };
+		920A75FE2DB2DB5B0046E3A4 /* MacDeviSwitchKitTests */ = {isa = PBXFileReference; lastKnownFileType = folder; path = MacDeviSwitchKitTests; sourceTree = "<group>"; };
+		920A75FF2DB2DB5B0046E3A4 /* MacDeviSwitchKitTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = MacDeviSwitchKitTests.xctestplan; sourceTree = "<group>"; };
+		920A76002DB2DB5B0046E3A4 /* MacDeviSwitchUITests */ = {isa = PBXFileReference; lastKnownFileType = folder; path = MacDeviSwitchUITests; sourceTree = "<group>"; };
+		920A76012DB2DB5B0046E3A4 /* MacDeviSwitchTests */ = {isa = PBXFileReference; lastKnownFileType = folder; path = MacDeviSwitchTests; sourceTree = "<group>"; };
 		923BCC8F2DB26EA20068ACDF /* MacDeviSwitch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacDeviSwitch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		923BCCA32DB26EA40068ACDF /* MacDeviSwitchTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacDeviSwitchTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		923BCCAD2DB26EA40068ACDF /* MacDeviSwitchUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacDeviSwitchUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -147,6 +151,10 @@
 		923BCC862DB26EA20068ACDF = {
 			isa = PBXGroup;
 			children = (
+				920A76012DB2DB5B0046E3A4 /* MacDeviSwitchTests */,
+				920A76002DB2DB5B0046E3A4 /* MacDeviSwitchUITests */,
+				920A75FF2DB2DB5B0046E3A4 /* MacDeviSwitchKitTests.xctestplan */,
+				920A75FE2DB2DB5B0046E3A4 /* MacDeviSwitchKitTests */,
 				920A75F52DB281150046E3A4 /* TestPlan.xctestplan */,
 				920A75F42DB27ED90046E3A4 /* MacDeviSwitchKitTests */,
 				923BCCF82DB27B110068ACDF /* MacDeviSwitchKitTests */,

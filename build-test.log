@@ -1,0 +1,265 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild clean build test -project MacDeviSwitch/MacDeviSwitch.xcodeproj -scheme MacDeviSwitchKit -destination platform=macOS
+
+ComputePackagePrebuildTargetDependencyGraph
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+** CLEAN SUCCEEDED **
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (1 target)
+    Target 'MacDeviSwitchKit' in project 'MacDeviSwitch' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.4.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.4.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+ReadFileContents /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/share/docc/features.json
+
+Build description signature: e1b93d9dbb74317dcd800f0780c6502d
+Build description path: /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/XCBuildData/e1b93d9dbb74317dcd800f0780c6502d.xcbuilddata
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.4.sdk /Users/jederlichman/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.4-24E241-88b860576fb364319593bd8fb30666b0.sdkstatcache
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitch.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.4.sdk -o /Users/jederlichman/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.4-24E241-88b860576fb364319593bd8fb30666b0.sdkstatcache
+
+CreateBuildDirectory /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Products
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitch.xcodeproj
+    builtin-create-build-directory /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Products
+
+CreateBuildDirectory /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitch.xcodeproj
+    builtin-create-build-directory /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex
+
+CreateBuildDirectory /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/EagerLinkingTBDs/Debug
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitch.xcodeproj
+    builtin-create-build-directory /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/EagerLinkingTBDs/Debug
+
+CreateBuildDirectory /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Products/Debug
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitch.xcodeproj
+    builtin-create-build-directory /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Products/Debug
+
+WriteAuxiliaryFile /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitch-0c6831685975df5d63de6630c52a8701-VFS/all-product-headers.yaml
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitch.xcodeproj
+    write-file /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitch-0c6831685975df5d63de6630c52a8701-VFS/all-product-headers.yaml
+
+WriteAuxiliaryFile /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/MacDeviSwitchKit.hmap (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    write-file /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/MacDeviSwitchKit.hmap
+
+WriteAuxiliaryFile /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/empty-MacDeviSwitchKit.plist (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    write-file /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/empty-MacDeviSwitchKit.plist
+
+WriteAuxiliaryFile /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/MacDeviSwitchKit-own-target-headers.hmap (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    write-file /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/MacDeviSwitchKit-own-target-headers.hmap
+
+WriteAuxiliaryFile /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/MacDeviSwitchKit-generated-files.hmap (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    write-file /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/MacDeviSwitchKit-generated-files.hmap
+
+WriteAuxiliaryFile /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/MacDeviSwitchKit-all-target-headers.hmap (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    write-file /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/MacDeviSwitchKit-all-target-headers.hmap
+
+WriteAuxiliaryFile /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/Objects-normal/arm64/MacDeviSwitchKit_const_extract_protocols.json (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    write-file /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/Objects-normal/arm64/MacDeviSwitchKit_const_extract_protocols.json
+
+WriteAuxiliaryFile /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/Objects-normal/arm64/MacDeviSwitchKit.SwiftConstValuesFileList (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    write-file /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/Objects-normal/arm64/MacDeviSwitchKit.SwiftConstValuesFileList
+
+WriteAuxiliaryFile /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/MacDeviSwitchKit.DependencyStaticMetadataFileList (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    write-file /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/MacDeviSwitchKit.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/Objects-normal/arm64/7187679823f38a2a940e0043cdf9d637-common-args.resp (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    write-file /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/Objects-normal/arm64/7187679823f38a2a940e0043cdf9d637-common-args.resp
+-target arm64-apple-macos15.4 '-std=gnu17' -fmodules -gmodules '-fmodules-cache-path=/Users/jederlichman/Library/Developer/Xcode/DerivedData/ModuleCache.noindex' -fpascal-strings -O0 -fno-common '-DDEBUG=1' -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.4.sdk -g -iquote /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/MacDeviSwitchKit-generated-files.hmap -I/Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/MacDeviSwitchKit-own-target-headers.hmap -I/Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/MacDeviSwitchKit-all-target-headers.hmap -iquote /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/MacDeviSwitchKit-project-headers.hmap -I/Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Products/Debug/include -I/Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/DerivedSources-normal/arm64 -I/Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/DerivedSources/arm64 -I/Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/DerivedSources -F/Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Products/Debug
+
+WriteAuxiliaryFile /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/Objects-normal/arm64/MacDeviSwitchKit.LinkFileList (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    write-file /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/Objects-normal/arm64/MacDeviSwitchKit.LinkFileList
+
+WriteAuxiliaryFile /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/Objects-normal/arm64/MacDeviSwitchKit-OutputFileMap.json (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    write-file /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/Objects-normal/arm64/MacDeviSwitchKit-OutputFileMap.json
+
+WriteAuxiliaryFile /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/MacDeviSwitchKit-project-headers.hmap (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    write-file /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/MacDeviSwitchKit-project-headers.hmap
+
+WriteAuxiliaryFile /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/Objects-normal/arm64/MacDeviSwitchKit.SwiftFileList (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    write-file /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/Objects-normal/arm64/MacDeviSwitchKit.SwiftFileList
+
+WriteAuxiliaryFile /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/MacDeviSwitchKit.DependencyMetadataFileList (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    write-file /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/MacDeviSwitchKit.DependencyMetadataFileList
+
+WriteAuxiliaryFile /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/MacDeviSwitchKit-all-non-framework-target-headers.hmap (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    write-file /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/MacDeviSwitchKit-all-non-framework-target-headers.hmap
+
+WriteAuxiliaryFile /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/DerivedSources/MacDeviSwitchKit_vers.c (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    write-file /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/DerivedSources/MacDeviSwitchKit_vers.c
+
+SymLink /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Products/Debug/MacDeviSwitchKit.framework/Resources Versions/Current/Resources (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    /bin/ln -sfh Versions/Current/Resources /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Products/Debug/MacDeviSwitchKit.framework/Resources
+
+SymLink /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Products/Debug/MacDeviSwitchKit.framework/Versions/Current A (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    /bin/ln -sfh A /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Products/Debug/MacDeviSwitchKit.framework/Versions/Current
+
+SymLink /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Products/Debug/MacDeviSwitchKit.framework/Modules Versions/Current/Modules (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    /bin/ln -sfh Versions/Current/Modules /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Products/Debug/MacDeviSwitchKit.framework/Modules
+
+SymLink /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Products/Debug/MacDeviSwitchKit.framework/MacDeviSwitchKit Versions/Current/MacDeviSwitchKit (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    /bin/ln -sfh Versions/Current/MacDeviSwitchKit /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Products/Debug/MacDeviSwitchKit.framework/MacDeviSwitchKit
+
+MkDir /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Products/Debug/MacDeviSwitchKit.framework/Versions/A (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    /bin/mkdir -p /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Products/Debug/MacDeviSwitchKit.framework/Versions/A
+
+MkDir /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Products/Debug/MacDeviSwitchKit.framework/Versions (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    /bin/mkdir -p /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Products/Debug/MacDeviSwitchKit.framework/Versions
+
+MkDir /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Products/Debug/MacDeviSwitchKit.framework/Versions/A/Resources (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    /bin/mkdir -p /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Products/Debug/MacDeviSwitchKit.framework/Versions/A/Resources
+
+MkDir /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Products/Debug/MacDeviSwitchKit.framework (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    /bin/mkdir -p /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Products/Debug/MacDeviSwitchKit.framework
+
+ProcessInfoPlistFile /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Products/Debug/MacDeviSwitchKit.framework/Versions/A/Resources/Info.plist /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/empty-MacDeviSwitchKit.plist (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    builtin-infoPlistUtility /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/empty-MacDeviSwitchKit.plist -producttype com.apple.product-type.framework -expandbuildsettings -platform macosx -o /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Products/Debug/MacDeviSwitchKit.framework/Versions/A/Resources/Info.plist
+
+SwiftDriver MacDeviSwitchKit normal arm64 com.apple.xcode.tools.swift.compiler (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name MacDeviSwitchKit -Onone -enforce-exclusivity\=checked @/Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/Objects-normal/arm64/MacDeviSwitchKit.SwiftFileList -DDEBUG -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.4.sdk -target arm64-apple-macos15.4 -g -module-cache-path /Users/jederlichman/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Index.noindex/DataStore -enable-library-evolution -swift-version 5 -I /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Products/Debug -F /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Products/Debug -emit-localized-strings -emit-localized-strings-path /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/Objects-normal/arm64 -c -j14 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/jederlichman/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.4-24E241-88b860576fb364319593bd8fb30666b0.sdkstatcache -output-file-map /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/Objects-normal/arm64/MacDeviSwitchKit-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/Objects-normal/arm64/MacDeviSwitchKit.swiftmodule -emit-module-interface-path /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/Objects-normal/arm64/MacDeviSwitchKit.swiftinterface -emit-private-module-interface-path /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/Objects-normal/arm64/MacDeviSwitchKit.private.swiftinterface -validate-clang-modules-once -clang-build-session-file /Users/jederlichman/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/Objects-normal/arm64/MacDeviSwitchKit_const_extract_protocols.json -Xcc -iquote -Xcc /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/MacDeviSwitchKit-generated-files.hmap -Xcc -I/Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/MacDeviSwitchKit-own-target-headers.hmap -Xcc -I/Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/MacDeviSwitchKit-all-target-headers.hmap -Xcc -iquote -Xcc /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/MacDeviSwitchKit-project-headers.hmap -Xcc -I/Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Products/Debug/include -Xcc -I/Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/DerivedSources-normal/arm64 -Xcc -I/Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/DerivedSources/arm64 -Xcc -I/Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/Objects-normal/arm64/MacDeviSwitchKit-Swift.h -working-directory /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch -experimental-emit-module-separately -disable-cmo
+
+SwiftCompile normal arm64 Compiling\ PreferenceManager.swift /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/PreferenceManager.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+
+SwiftCompile normal arm64 /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/PreferenceManager.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    
+
+SwiftCompile normal arm64 Compiling\ NotificationManager.swift /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/NotificationManager.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+SwiftCompile normal arm64 /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/NotificationManager.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    
+
+SwiftCompile normal arm64 Compiling\ MacDeviSwitchKit.swift /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/MacDeviSwitchKit.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+
+SwiftCompile normal arm64 /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/MacDeviSwitchKit.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ MacDeviSwitchKit (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+Failed frontend command:
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-frontend -frontend -emit-module -experimental-skip-non-inlinable-function-bodies-without-types /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/AudioDeviceMonitor.swift /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/PreferenceManager.swift /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/AudioSwitcher.swift /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/DisplayMonitor.swift /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/LidStateMonitor.swift /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/NotificationManager.swift /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/SwitchController.swift /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/Protocols.swift /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/MacDeviSwitchKit.swift -target arm64-apple-macos15.4 -Xllvm -aarch64-use-tbi -enable-objc-interop -stack-check -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.4.sdk -I /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Products/Debug -F /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Products/Debug -no-color-diagnostics -enable-library-evolution -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=5 -module-cache-path /Users/jederlichman/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -swift-version 5 -enforce-exclusivity\=checked -Onone -D DEBUG -serialize-debugging-options -const-gather-protocols-file /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/Objects-normal/arm64/MacDeviSwitchKit_const_extract_protocols.json -enable-experimental-feature DebugDescriptionMacro -enable-bare-slash-regex -validate-clang-modules-once -clang-build-session-file /Users/jederlichman/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch -resource-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift -enable-anonymous-context-mangled-names -file-compilation-dir /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch -Xcc -ivfsstatcache -Xcc /Users/jederlichman/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/macosx15.4-24E241-88b860576fb364319593bd8fb30666b0.sdkstatcache -Xcc -I/Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/swift-overrides.hmap -Xcc -iquote -Xcc /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/MacDeviSwitchKit-generated-files.hmap -Xcc -I/Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/MacDeviSwitchKit-own-target-headers.hmap -Xcc -I/Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/MacDeviSwitchKit-all-target-headers.hmap -Xcc -iquote -Xcc /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/MacDeviSwitchKit-project-headers.hmap -Xcc -I/Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Products/Debug/include -Xcc -I/Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/DerivedSources-normal/arm64 -Xcc -I/Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/DerivedSources/arm64 -Xcc -I/Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/DerivedSources -Xcc -DDEBUG\=1 -module-name MacDeviSwitchKit -frontend-parseable-output -disable-clang-spi -target-sdk-version 15.4 -target-sdk-name macosx15.4 -external-plugin-path /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server -external-plugin-path /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/local/lib/swift/host/plugins\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server -in-process-plugin-server-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/libSwiftInProcPluginServer.dylib -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/local/lib/swift/host/plugins -emit-module-doc-path /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/Objects-normal/arm64/MacDeviSwitchKit.swiftdoc -emit-module-source-info-path /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/Objects-normal/arm64/MacDeviSwitchKit.swiftsourceinfo -emit-module-interface-path /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/Objects-normal/arm64/MacDeviSwitchKit.swiftinterface -emit-private-module-interface-path /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/Objects-normal/arm64/MacDeviSwitchKit.private.swiftinterface -emit-objc-header-path /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/Objects-normal/arm64/MacDeviSwitchKit-Swift.h -serialize-diagnostics-path /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/Objects-normal/arm64/MacDeviSwitchKit-master-emit-module.dia -emit-dependencies-path /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/Objects-normal/arm64/MacDeviSwitchKit-master-emit-module.d -o /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/Objects-normal/arm64/MacDeviSwitchKit.swiftmodule -emit-abi-descriptor-path /Users/jederlichman/Library/Developer/Xcode/DerivedData/MacDeviSwitch-ehuauyocalcofbgkklollbharzom/Build/Intermediates.noindex/MacDeviSwitch.build/Debug/MacDeviSwitchKit.build/Objects-normal/arm64/MacDeviSwitchKit.abi.json
+
+EmitSwiftModule normal arm64 (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    
+/Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/SwitchController.swift:136:17: error: invalid redeclaration of 'evaluateAndSwitch()'
+    public func evaluateAndSwitch() throws -> Bool {
+                ^
+/Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/SwitchController.swift:110:17: note: 'evaluateAndSwitch()' previously declared here
+    public func evaluateAndSwitch() throws -> Bool {
+                ^
+/Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/SwitchController.swift:110:17: note: 'evaluateAndSwitch()' previously declared here
+    public func evaluateAndSwitch() throws -> Bool {
+                ^
+/Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/SwitchController.swift:23:14: error: type 'SwitchController' does not conform to protocol 'SwitchControlling'
+public class SwitchController: SwitchControlling {
+             ^
+/Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/SwitchController.swift:97:17: note: candidate throws, but protocol does not allow it
+    public func start() throws {
+                ^
+/Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/SwitchController.swift:124:17: note: candidate throws, but protocol does not allow it
+    public func startMonitoring() throws {
+                ^
+/Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/SwitchController.swift:23:14: note: add stubs for conformance
+public class SwitchController: SwitchControlling {
+             ^
+/Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/Protocols.swift:91:10: note: protocol requires function 'start()' with type '() -> ()'
+    func start()
+         ^
+/Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/Protocols.swift:99:10: note: protocol requires function 'startMonitoring()' with type '() -> ()'
+    func startMonitoring()
+         ^
+
+SwiftCompile normal arm64 Compiling\ AudioSwitcher.swift /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/AudioSwitcher.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+
+SwiftCompile normal arm64 /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/AudioSwitcher.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    
+
+SwiftCompile normal arm64 Compiling\ DisplayMonitor.swift /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/DisplayMonitor.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+
+SwiftCompile normal arm64 /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/DisplayMonitor.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    
+
+SwiftCompile normal arm64 Compiling\ AudioDeviceMonitor.swift /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/AudioDeviceMonitor.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+
+SwiftCompile normal arm64 /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/AudioDeviceMonitor.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    
+
+SwiftCompile normal arm64 Compiling\ LidStateMonitor.swift /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/LidStateMonitor.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+
+SwiftCompile normal arm64 /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/LidStateMonitor.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    
+
+SwiftCompile normal arm64 Compiling\ SwitchController.swift /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/SwitchController.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+
+SwiftCompile normal arm64 /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/SwitchController.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    
+
+SwiftCompile normal arm64 Compiling\ Protocols.swift /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/Protocols.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+
+SwiftCompile normal arm64 /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/Protocols.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+    cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling MacDeviSwitchKit.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+
+SwiftDriverJobDiscovery normal arm64 Compiling Protocols.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
+

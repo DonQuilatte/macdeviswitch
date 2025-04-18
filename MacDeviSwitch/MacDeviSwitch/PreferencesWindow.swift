@@ -63,7 +63,7 @@ class PreferencesWindow: NSWindowController {
         // Revert Toggle
         revertToggle = NSButton(checkboxWithTitle: "Revert to Internal Mic on Lid Open", target: self, action: #selector(toggleRevertPreference(_:)))
         revertToggle.translatesAutoresizingMaskIntoConstraints = false
-        revertToggle.state = preferenceManager.revertOnLidOpen ? .on : .off
+        revertToggle.state = preferenceManager.revertToFallbackOnLidOpen ? .on : .off
         contentView.addSubview(revertToggle)
         
         // Notifications Toggle
@@ -141,7 +141,7 @@ class PreferencesWindow: NSWindowController {
     // MARK: - Actions
     
     @objc private func toggleRevertPreference(_ sender: NSButton) {
-        preferenceManager.revertOnLidOpen = (sender.state == .on)
+        preferenceManager.revertToFallbackOnLidOpen = (sender.state == .on)
     }
     
     @objc private func toggleNotifications(_ sender: NSButton) {
@@ -167,7 +167,7 @@ class PreferencesWindow: NSWindowController {
         
         // Update UI with current preferences
         updateDevicePopup()
-        revertToggle.state = preferenceManager.revertOnLidOpen ? .on : .off
+        revertToggle.state = preferenceManager.revertToFallbackOnLidOpen ? .on : .off
         
         // Bring to front
         window?.makeKeyAndOrderFront(sender)

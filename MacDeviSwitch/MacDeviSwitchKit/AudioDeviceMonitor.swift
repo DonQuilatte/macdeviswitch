@@ -2,17 +2,49 @@ import Foundation
 import CoreAudio
 import os.log
 
+/// Errors that can occur during audio device monitoring
+public enum AudioDeviceMonitorError: Error, LocalizedError {
+    case listenerRegistrationFailed(OSStatus)
+    case listenerRemovalFailed(OSStatus)
+    case deviceListQueryFailed(OSStatus)
+    case devicePropertyQueryFailed(AudioDeviceID, AudioObjectPropertySelector, OSStatus)
+    
+    public var errorDescription: String? {
+        switch self {
+        case .listenerRegistrationFailed(let status):
+            return "Failed to register audio device listener (Error: \(status))"
+        case .listenerRemovalFailed(let status):
+            return "Failed to remove audio device listener (Error: \(status))"
+        case .deviceListQueryFailed(let status):
+            return "Failed to query audio device list (Error: \(status))"
+        case .devicePropertyQueryFailed(let deviceID, let selector, let status):
+            return "Failed to query property \(selector) for device \(deviceID) (Error: \(status))"
+        }
+    }
+}
+
 // Structure to hold relevant device info
 public struct AudioDeviceInfo: Identifiable, Hashable {
     public let id: AudioDeviceID // Raw CoreAudio ID
     public let uid: String
     public let name: String
     public let isInput: Bool
-    // Add other properties if needed (e.g., manufacturer)
+    public let isOutput: Bool
+    
+    public init(id: AudioDeviceID, uid: String, name: String, isInput: Bool, isOutput: Bool = false) {
+        self.id = id
+        self.uid = uid
+        self.name = name
+        self.isInput = isInput
+        self.isOutput = isOutput
+    }
 }
 
+/// Monitors audio device connections/disconnections using CoreAudio.
 public final class AudioDeviceMonitor: AudioDeviceMonitoring {
-    fileprivate let logger = Logger(subsystem: "com.yourcompany.macdeviswitchkit", category: "AudioDeviceMonitor") // Replace
+    fileprivate let logger = Logger(subsystem: "via.MacDeviSwitch.kit", category: "AudioDeviceMonitor")
+    
+    /// The list of currently available audio input devices.
     public private(set) var availableInputDevices: [AudioDeviceInfo] = []
 
     private var propertyListenerBlock: AudioObjectPropertyListenerBlock?
@@ -25,6 +57,7 @@ public final class AudioDeviceMonitor: AudioDeviceMonitoring {
     // Monitoring state
     private var isMonitoring: Bool = false
 
+    /// Initializes a new instance of the `AudioDeviceMonitor` class.
     public init() {
         logger.debug("Initializing AudioDeviceMonitor")
         updateDeviceList()
@@ -35,21 +68,31 @@ public final class AudioDeviceMonitor: AudioDeviceMonitoring {
         stopMonitoring()
     }
     
+    /// Starts monitoring audio device connections/disconnections.
     public func startMonitoring() {
         guard !isMonitoring else { return }
         logger.debug("Starting audio device monitoring")
-        registerForDeviceChanges()
-        isMonitoring = true
+        do {
+            try registerForDeviceChanges()
+            isMonitoring = true
+        } catch {
+            logger.error("Failed to start monitoring: \(error.localizedDescription)")
+        }
     }
     
+    /// Stops monitoring audio device connections/disconnections.
     public func stopMonitoring() {
         guard isMonitoring else { return }
         logger.debug("Stopping audio device monitoring")
-        unregisterForDeviceChanges()
-        isMonitoring = false
+        do {
+            try unregisterForDeviceChanges()
+            isMonitoring = false
+        } catch {
+            logger.error("Failed to stop monitoring: \(error.localizedDescription)")
+        }
     }
 
-    private func registerForDeviceChanges() {
+    private func registerForDeviceChanges() throws {
         propertyListenerBlock = { [weak self] (inNumberOfAddresses, inAddresses) in
             self?.logger.debug("Received audio hardware property change notification.")
             // Check if kAudioHardwarePropertyDevices is one of the changed properties
@@ -60,14 +103,16 @@ public final class AudioDeviceMonitor: AudioDeviceMonitoring {
         let err = AudioObjectAddPropertyListenerBlock(AudioObjectID(kAudioObjectSystemObject), &systemObjectAddress, nil, propertyListenerBlock!)
         if err != noErr {
             logger.error("Error adding property listener block: \(err)")
+            throw AudioDeviceMonitorError.listenerRegistrationFailed(err)
         }
     }
 
-    private func unregisterForDeviceChanges() {
+    private func unregisterForDeviceChanges() throws {
         if let block = propertyListenerBlock {
             let err = AudioObjectRemovePropertyListenerBlock(AudioObjectID(kAudioObjectSystemObject), &systemObjectAddress, nil, block)
             if err != noErr {
                 logger.error("Error removing property listener block: \(err)")
+                throw AudioDeviceMonitorError.listenerRemovalFailed(err)
             }
             propertyListenerBlock = nil // Release the block
         }
@@ -170,7 +215,10 @@ public final class AudioDeviceMonitor: AudioDeviceMonitoring {
         )
 
         var err = AudioObjectGetPropertyDataSize(deviceID, &propertyAddress, 0, nil, &size)
-        guard err == noErr, size > 0 else { return nil }
+        guard err == noErr, size > 0 else { 
+            logger.warning("Error getting property size for selector \(selector) on device \(deviceID): \(err)")
+            return nil 
+        }
 
         var cfString: CFString?
         err = AudioObjectGetPropertyData(deviceID, &propertyAddress, 0, nil, &size, &cfString)

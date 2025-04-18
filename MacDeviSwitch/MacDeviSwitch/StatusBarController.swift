@@ -5,7 +5,7 @@ import MacDeviSwitchKit
 
 class StatusBarController {
     private var statusItem: NSStatusItem!
-    private let logger = Logger(subsystem: "com.yourcompany.macdeviswitch", category: "StatusBarController")
+    private let logger = Logger(subsystem: "via.MacDeviSwitch", category: "StatusBarController")
 
     // Dependencies (passed from AppDelegate)
     private let audioDeviceMonitor: AudioDeviceMonitoring
@@ -88,7 +88,7 @@ class StatusBarController {
         // --- Settings ---
         let revertItem = NSMenuItem(title: "Revert to Internal on Lid Open", action: #selector(toggleRevertPreference(_:)), keyEquivalent: "")
         revertItem.target = self
-        revertItem.state = preferenceManager.revertOnLidOpen ? .on : .off
+        revertItem.state = preferenceManager.revertToFallbackOnLidOpen ? .on : .off
         menu.addItem(revertItem)
         
         // --- Preferences ---
@@ -130,13 +130,18 @@ class StatusBarController {
         updateMenuCheckmarks()
         
         // Trigger the SwitchController to re-evaluate immediately
-        switchController?.evaluateAndSwitch()
+        do {
+            let switchOccurred = try switchController?.evaluateAndSwitch() ?? false
+            logger.debug("Switch result: \(switchOccurred ? "switched" : "no change needed")")
+        } catch {
+            logger.error("Error during evaluation: \(error.localizedDescription)")
+        }
     }
 
     @objc private func toggleRevertPreference(_ sender: NSMenuItem) {
-        let newState = !preferenceManager.revertOnLidOpen
+        let newState = !preferenceManager.revertToFallbackOnLidOpen
         logger.info("User toggled 'Revert on Lid Open' to: \(newState)")
-        preferenceManager.revertOnLidOpen = newState
+        preferenceManager.revertToFallbackOnLidOpen = newState
         sender.state = newState ? .on : .off
     }
     
@@ -164,6 +169,18 @@ class StatusBarController {
         if let switchController = switchController {
             switchController.diagnoseAudioSwitchingIssues()
             logger.info("Diagnostic information has been printed to the console")
+        }
+        
+        // Attempt to open the diagnostic log file in user's Documents directory
+        let fileManager = FileManager.default
+        if let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first {
+            let logFileURL = documentsDirectory.appendingPathComponent("macdeviswitch_diagnostics.log")
+            if fileManager.fileExists(atPath: logFileURL.path) {
+                NSWorkspace.shared.open(logFileURL)
+                logger.info("Opened diagnostic log file at \(logFileURL.path)")
+            } else {
+                logger.error("Diagnostic log file not found at \(logFileURL.path)")
+            }
         }
     }
 

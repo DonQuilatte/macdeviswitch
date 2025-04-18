@@ -2,12 +2,27 @@ import Foundation
 import UserNotifications
 import os.log
 
-/// Manages system notifications for audio device switching events.
+/// Errors that can occur during notification operations
+public enum NotificationManagerError: Error, LocalizedError {
+    case permissionDenied
+    case notificationFailed(Error)
+    
+    public var errorDescription: String? {
+        switch self {
+        case .permissionDenied:
+            return "Notification permission was denied by the user"
+        case .notificationFailed(let error):
+            return "Failed to send notification: \(error.localizedDescription)"
+        }
+    }
+}
+
+/// Handles user notifications for audio device switching events.
 ///
 /// This class is responsible for requesting notification permissions and sending notifications to the user.
 public final class NotificationManager: NotificationManaging {
     /// The logger instance for logging events and errors.
-    private let logger = Logger(subsystem: "com.yourcompany.macdeviswitchkit", category: "NotificationManager")
+    private let logger = Logger(subsystem: "via.MacDeviSwitch.kit", category: "NotificationManager")
     
     /// The user notification center instance for managing notifications.
     private let notificationCenter = UNUserNotificationCenter.current()
@@ -15,35 +30,77 @@ public final class NotificationManager: NotificationManaging {
     /// The preference manager instance for checking notification settings.
     private let preferenceManager: PreferenceManaging
     
+    /// Whether notification permissions have been granted
+    private var notificationsAuthorized = false
+    
     /// Initializes a new NotificationManager
     /// - Parameter preferenceManager: The preference manager to check notification settings
+    ///
+    /// Creates a new instance of the NotificationManager class, responsible for handling user notifications.
     public init(preferenceManager: PreferenceManaging) {
         self.preferenceManager = preferenceManager
-        requestNotificationPermission()
         logger.debug("Initializing NotificationManager")
+        checkNotificationPermission()
     }
     
-    /// Requests permission to show notifications
-    private func requestNotificationPermission() {
-        notificationCenter.requestAuthorization(options: [.alert, .sound]) { granted, error in
-            if let error = error {
-                self.logger.error("Failed to request notification permission: \(error.localizedDescription)")
-            } else if granted {
-                self.logger.debug("Notification permission granted")
-            } else {
-                self.logger.warning("Notification permission denied")
+    /// Checks current notification permission status
+    private func checkNotificationPermission() {
+        notificationCenter.getNotificationSettings { [weak self] settings in
+            guard let self = self else { return }
+            
+            switch settings.authorizationStatus {
+            case .authorized, .provisional:
+                self.notificationsAuthorized = true
+                self.logger.debug("Notification permission is already granted")
+            case .denied:
+                self.notificationsAuthorized = false
+                self.logger.warning("Notification permission is denied")
+            case .notDetermined:
+                self.requestNotificationPermission()
+            case .ephemeral:
+                self.notificationsAuthorized = true
+                self.logger.debug("Notification permission is ephemeral")
+            @unknown default:
+                self.notificationsAuthorized = false
+                self.logger.warning("Unknown notification authorization status")
             }
         }
     }
     
-    /// Sends a notification with the given title and body
+    /// Requests permission to show notifications
+    private func requestNotificationPermission() {
+        notificationCenter.requestAuthorization(options: [.alert, .sound]) { [weak self] granted, error in
+            guard let self = self else { return }
+            
+            if let error = error {
+                self.logger.error("Failed to request notification permission: \(error.localizedDescription)")
+                self.notificationsAuthorized = false
+            } else if granted {
+                self.logger.debug("Notification permission granted")
+                self.notificationsAuthorized = true
+            } else {
+                self.logger.warning("Notification permission denied")
+                self.notificationsAuthorized = false
+            }
+        }
+    }
+    
+    /// Sends a notification to the user.
     /// - Parameters:
-    ///   - title: The notification title
-    ///   - body: The notification body text
+    ///   - title: The notification title.
+    ///   - body: The notification body.
+    ///
+    /// Sends a notification with the given title and body to the user, if notification permissions are granted and notifications are enabled in preferences.
     public func sendNotification(title: String, body: String) {
         // Check if notifications are enabled in preferences
         guard preferenceManager.showNotifications else {
             logger.debug("Notifications disabled in preferences, skipping notification: \(title)")
+            return
+        }
+        
+        // Check if we have permission to send notifications
+        guard notificationsAuthorized else {
+            logger.warning("Cannot send notification: permission not granted")
             return
         }
         
@@ -52,22 +109,18 @@ public final class NotificationManager: NotificationManaging {
         content.body = body
         content.sound = UNNotificationSound.default
         
-        // Set higher priority for error notifications.
-        if title.contains("Failed") || title.contains("Error") {
-            if #available(macOS 12.0, *) {
-                content.interruptionLevel = .timeSensitive
-            }
-        }
+        // Create a request with a unique identifier
+        let identifier = "via.MacDeviSwitch.\(UUID().uuidString)"
+        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: nil)
         
-        let request = UNNotificationRequest(
-            identifier: UUID().uuidString,
-            content: content,
-            trigger: UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
-        )
-        
-        notificationCenter.add(request) { error in
+        // Add the request to the notification center
+        notificationCenter.add(request) { [weak self] error in
+            guard let self = self else { return }
+            
             if let error = error {
-                self.logger.error("Error sending notification: \(error.localizedDescription)")
+                self.logger.error("Failed to send notification: \(error.localizedDescription)")
+            } else {
+                self.logger.debug("Notification sent successfully: \(title)")
             }
         }
     }

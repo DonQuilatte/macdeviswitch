@@ -2,18 +2,37 @@ import Foundation
 import CoreGraphics
 import os.log
 
-public final class DisplayMonitor: DisplayMonitoring {
-    fileprivate let logger = Logger(subsystem: "com.yourcompany.macdeviswitchkit", category: "DisplayMonitor") // Replace with your bundle ID
+/// Errors that can occur during display monitoring
+public enum DisplayMonitorError: Error, LocalizedError {
+    case registrationFailed
+    case displayListQueryFailed(CGError)
+    
+    public var errorDescription: String? {
+        switch self {
+        case .registrationFailed:
+            return "Failed to register for display reconfiguration notifications"
+        case .displayListQueryFailed(let error):
+            return "Failed to query display list (Error: \(error))"
+        }
+    }
+}
 
-    // Current state - reflects if at least one non-builtin display is connected
+/// Detects external display connections via CGDisplay.
+public final class DisplayMonitor: DisplayMonitoring {
+    fileprivate let logger = Logger(subsystem: "via.MacDeviSwitch.kit", category: "DisplayMonitor")
+
+    /// Indicates whether an external display is currently connected.
     public private(set) var isExternalDisplayConnected: Bool = false
     
-    // Callback for display connection changes
+    /// Callback invoked when the external display connection status changes.
+    ///
+    /// - Parameter isConnected: `true` if an external display is connected, `false` otherwise.
     public var onDisplayConnectionChange: ((Bool) -> Void)?
     
     // Monitoring state
     private var isMonitoring: Bool = false
 
+    /// Initializes a new `DisplayMonitor` instance.
     public init() {
         logger.debug("Initializing DisplayMonitor")
         // Initial check
@@ -25,13 +44,23 @@ public final class DisplayMonitor: DisplayMonitoring {
         stopMonitoring()
     }
     
+    /// Starts monitoring for display connection changes.
+    ///
+    /// If monitoring is already active, this method does nothing.
     public func startMonitoring() {
         guard !isMonitoring else { return }
         logger.debug("Starting display monitoring")
-        registerForDisplayChanges()
+        do {
+            try registerForDisplayChanges()
+        } catch {
+            logger.error("Failed to start monitoring: \(error)")
+        }
         isMonitoring = true
     }
     
+    /// Stops monitoring for display connection changes.
+    ///
+    /// If monitoring is not active, this method does nothing.
     public func stopMonitoring() {
         guard isMonitoring else { return }
         logger.debug("Stopping display monitoring")
@@ -39,9 +68,12 @@ public final class DisplayMonitor: DisplayMonitoring {
         isMonitoring = false
     }
 
-    private func registerForDisplayChanges() {
+    private func registerForDisplayChanges() throws {
         logger.debug("Registering for display reconfiguration notifications.")
-        CGDisplayRegisterReconfigurationCallback(displayReconfigurationCallback, Unmanaged.passUnretained(self).toOpaque())
+        let error = CGDisplayRegisterReconfigurationCallback(displayReconfigurationCallback, Unmanaged.passUnretained(self).toOpaque())
+        if error != .success {
+            throw DisplayMonitorError.registrationFailed
+        }
     }
 
     private func unregisterForDisplayChanges() {
@@ -54,8 +86,9 @@ public final class DisplayMonitor: DisplayMonitoring {
         var activeDisplays: [CGDirectDisplayID] = []
 
         // Get count of online displays
-        guard CGGetOnlineDisplayList(0, nil, &onlineDisplays) == .success else {
-            logger.error("Failed to get online display count.")
+        let error = CGGetOnlineDisplayList(0, nil, &onlineDisplays)
+        guard error == .success else {
+            logger.error("Failed to get online display count. Error: \(error.rawValue)")
             // Consider the state unknown or unchanged? Defaulting to previous state for now.
             return
         }
@@ -68,8 +101,9 @@ public final class DisplayMonitor: DisplayMonitoring {
 
         // Allocate space and get the list of online display IDs
         activeDisplays = Array<CGDirectDisplayID>(repeating: kCGNullDirectDisplay, count: Int(onlineDisplays))
-        guard CGGetOnlineDisplayList(onlineDisplays, &activeDisplays, &onlineDisplays) == .success else {
-             logger.error("Failed to get online display list.")
+        let listError = CGGetOnlineDisplayList(onlineDisplays, &activeDisplays, &onlineDisplays)
+        guard listError == .success else {
+             logger.error("Failed to get online display list. Error: \(listError.rawValue)")
              return
         }
 
