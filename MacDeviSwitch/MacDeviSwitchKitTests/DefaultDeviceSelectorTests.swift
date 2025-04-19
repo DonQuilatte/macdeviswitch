@@ -3,12 +3,12 @@ import XCTest
 
 final class DefaultDeviceSelectorTests: XCTestCase {
     var selector: DefaultDeviceSelector!
-    var prefs: MockPreferenceManager!
+    var prefs: MockSelectorPrefs!
 
     override func setUp() {
         super.setUp()
         selector = DefaultDeviceSelector()
-        prefs = MockPreferenceManager()
+        prefs = MockSelectorPrefs()
     }
 
     override func tearDown() {
@@ -78,8 +78,8 @@ final class DefaultDeviceSelectorTests: XCTestCase {
     }
 }
 
-// Simple in-memory mock for PreferenceManaging protocol
-class MockPreferenceManager: PreferenceManaging {
+// Simple in-memory mock for PreferenceManaging protocol for DefaultDeviceSelectorTests
+class MockSelectorPrefs: PreferenceManaging {
     var targetMicrophoneUID: String?
     var revertToFallbackOnLidOpen: Bool = false
     var showNotifications: Bool = false
