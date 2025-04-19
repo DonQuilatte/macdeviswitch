@@ -1,5 +1,4 @@
 import Foundation
-import IOKit
 import IOKit.pwr_mgt
 import os.log
 
@@ -15,7 +14,7 @@ public enum LidStateMonitorError: Error, LocalizedError {
     case serviceCloseFailed
     /// Failed to query lid state
     case queryFailed
-    
+
     public var errorDescription: String? {
         switch self {
         case .registrationFailed:
@@ -41,13 +40,13 @@ public final class LidStateMonitor: LidStateMonitoring {
 
     /// Indicates whether the lid is currently open.
     public private(set) var isLidOpen: Bool = true // Default assumption, immediately queried
-    
+
     /// Callback for lid state changes.
     ///
     /// This closure is called whenever the lid state changes.
     /// - Parameter isOpen: `true` if the lid is open, `false` otherwise.
     public var onLidStateChange: ((Bool) -> Void)?
-    
+
     // Monitoring state
     private var isMonitoring: Bool = false
 
@@ -64,7 +63,7 @@ public final class LidStateMonitor: LidStateMonitoring {
         logger.debug("Deinitializing LidStateMonitor")
         stopMonitoring()
     }
-    
+
     /// Starts monitoring lid state changes.
     ///
     /// This method sets up the necessary IOKit notifications to detect lid state changes.
@@ -75,7 +74,7 @@ public final class LidStateMonitor: LidStateMonitoring {
         try setupPowerNotification()
         isMonitoring = true
     }
-    
+
     /// Stops monitoring lid state changes.
     ///
     /// This method tears down the IOKit notifications and stops monitoring lid state changes.
@@ -87,7 +86,14 @@ public final class LidStateMonitor: LidStateMonitoring {
     }
 
     private func setupPowerNotification() throws {
-        rootPort = IORegisterForSystemPower(Unmanaged.passUnretained(self).toOpaque(), &notificationPort, powerCallback, &notifier)
+        // Get the IOPower root domain port (used for acknowledging messages)
+        rootPort = IORegisterForSystemPower(
+            Unmanaged.passUnretained(self).toOpaque(), // refcon
+            &notificationPort, // notificationPort
+            powerCallback, // callback
+            &notifier // notifier object
+        )
+
         if rootPort == 0 {
             throw LidStateMonitorError.registrationFailed
         }
@@ -132,16 +138,19 @@ public final class LidStateMonitor: LidStateMonitoring {
 }
 
 // C-style callback function
-private func powerCallback(refcon: UnsafeMutableRawPointer?, service: io_service_t, messageType: UInt32, messageArgument: UnsafeMutableRawPointer?) -> Void {
+private func powerCallback(
+    refcon: UnsafeMutableRawPointer?,
+    service: io_service_t,
+    messageType: UInt32,
+    messageArgument: UnsafeMutableRawPointer?
+) {
     guard let refcon = refcon else {
         os_log(.error, "Power callback invoked without valid refcon.")
         return
     }
-    
+
     let monitor = Unmanaged<LidStateMonitor>.fromOpaque(refcon).takeUnretainedValue()
     let logger = monitor.logger // Use the instance's logger
-    let rootPortRef = monitor.rootPort // Capture for use in allowing/denying sleep
-    _ = messageArgument.map { $0.load(as: UInt32.self) } ?? 0
 
     // Define IOKit message constants since the macros aren't directly accessible
     let kIOMessageSystemWillSleep: UInt32 = 0x280
@@ -157,50 +166,32 @@ private func powerCallback(refcon: UnsafeMutableRawPointer?, service: io_service
         // A more robust approach might query *before* allowing sleep,
         // but Apple docs suggest handling sleep quickly.
         monitor.updateLidState(isOpen: false)
-        // Acknowledge receipt of message
-        if let messageArg = messageArgument {
-            IOAllowPowerChange(rootPortRef, Int(bitPattern: messageArg))
-        }
+        monitor.acknowledgePowerChange(messageArgument: messageArgument)
 
     case kIOMessageCanSystemSleep:
         logger.debug("Received kIOMessageCanSystemSleep - Allowing sleep")
-        // Allow sleep
-        if let messageArg = messageArgument {
-            IOAllowPowerChange(rootPortRef, Int(bitPattern: messageArg))
-        }
+        monitor.acknowledgePowerChange(messageArgument: messageArgument)
 
     case kIOMessageSystemWillPowerOn:
         logger.debug("Received kIOMessageSystemWillPowerOn")
         // System is waking up, but devices might not be ready. Do nothing here.
-        // Acknowledge receipt
-        if let messageArg = messageArgument {
-            IOAllowPowerChange(rootPortRef, Int(bitPattern: messageArg))
-        }
+        monitor.acknowledgePowerChange(messageArgument: messageArgument)
 
     case kIOMessageSystemHasPoweredOn:
         logger.debug("Received kIOMessageSystemHasPoweredOn")
         // System has woken up. Query the actual lid state now.
         monitor.queryAndUpdateLidState()
-        // Acknowledge receipt
-        if let messageArg = messageArgument {
-            IOAllowPowerChange(rootPortRef, Int(bitPattern: messageArg))
-        }
+        monitor.acknowledgePowerChange(messageArgument: messageArgument)
 
     case kIOMessageSystemWillNotSleep:
-         logger.debug("Received kIOMessageSystemWillNotSleep")
-        // Acknowledge receipt
-        if let messageArg = messageArgument {
-            IOAllowPowerChange(rootPortRef, Int(bitPattern: messageArg))
-        }
+        logger.debug("Received kIOMessageSystemWillNotSleep")
+        monitor.acknowledgePowerChange(messageArgument: messageArgument)
 
     default:
         logger.debug("Received unhandled power message type: \(messageType)")
-        // Allow other message types by default
-        if let messageArg = messageArgument {
-            IOAllowPowerChange(rootPortRef, Int(bitPattern: messageArg))
-        }
-     }
- }
+        monitor.acknowledgePowerChange(messageArgument: messageArgument)
+    }
+}
 
 extension LidStateMonitor {
     /// Updates the internal lid state and notifies the `onLidStateChange` callback if the state changes.
@@ -208,10 +199,29 @@ extension LidStateMonitor {
     /// - Parameter isOpen: `true` if the lid is open, `false` otherwise.
     fileprivate func updateLidState(isOpen: Bool) {
         if self.isLidOpen != isOpen {
-            logger.info("Lid state changed to: \(isOpen ? "Open" : "Closed")")
+            let state = isOpen ? "Open" : "Closed"
+            logger.info("Lid state changed to: \(state)")
             self.isLidOpen = isOpen
             // Notify delegates or publish changes here later
             onLidStateChange?(isOpen)
+        }
+    }
+
+    /// Helper function to acknowledge power management messages.
+    ///
+    /// - Parameter messageArgument: The argument passed to the power callback.
+    fileprivate func acknowledgePowerChange(messageArgument: UnsafeMutableRawPointer?) {
+        // Use the captured rootPort from the instance
+        if let messageArg = messageArgument {
+            // Using Int(bitPattern:) as IOAllowPowerChange expects an Int
+            IOAllowPowerChange(
+                self.rootPort,
+                Int(bitPattern: messageArg)
+            )
+        } else {
+            // Log if messageArgument is nil, although typically it should be present for messages needing acknowledgement.
+            let logMsg = "Attempted to acknowledge power change with nil messageArgument."
+            logger.warning("\(logMsg, privacy: .public)")
         }
     }
 
@@ -220,29 +230,43 @@ extension LidStateMonitor {
     /// This method updates the internal `isLidOpen` state and notifies the `onLidStateChange` callback if the state changes.
     fileprivate func queryAndUpdateLidState() {
         logger.debug("Querying current lid state...")
-        let service = IOServiceGetMatchingService(kIOMainPortDefault, IOServiceMatching("IOPlatformExpertDevice"))
+        let service = IOServiceGetMatchingService(
+            kIOMainPortDefault,
+            IOServiceMatching("IOPlatformExpertDevice")
+        )
 
         var clamshellState = false // Default to closed if query fails
-
+        // Ensure the service object is valid
         if service != 0 {
-            if let prop = IORegistryEntryCreateCFProperty(service, "AppleClamshellState" as CFString, kCFAllocatorDefault, 0) {
+            if let prop = IORegistryEntryCreateCFProperty(
+                service,
+                "AppleClamshellState" as CFString,
+                kCFAllocatorDefault,
+                0
+            ) {
                 // Ensure the property is a CFBoolean
                 if CFGetTypeID(prop.takeUnretainedValue()) == CFBooleanGetTypeID() {
-                    let boolValue = prop.takeUnretainedValue() as! CFBoolean
-                    clamshellState = CFBooleanGetValue(boolValue)
+                    // Use optional cast for safety, even though type is checked
+                    if let booleanProp = prop.takeUnretainedValue() as? CFBoolean {
+                        clamshellState = CFBooleanGetValue(booleanProp)
+                    } else {
+                        // This should technically not happen due to the CFGetTypeID check, but safer
+                        logger.warning("Could not cast AppleClamshellState property to CFBoolean despite type check.")
+                    }
                     logger.debug("Successfully queried AppleClamshellState: \(clamshellState)")
                 } else {
-                    logger.warning("AppleClamshellState exists but is not a CFBoolean.")
+                    let logMsg = "AppleClamshellState exists but is not a CFBoolean."
+                    logger.warning("\(logMsg, privacy: .public)")
                 }
-                // Property was created, takeRetainedValue would balance the create, but we used takeUnretainedValue
-                // prop.release() // No longer needed with ARC managing the return? Check CF memory rules.
             } else {
-                logger.warning("Failed to get AppleClamshellState property.")
+                let logMsg = "Failed to get AppleClamshellState property."
+                logger.warning("\(logMsg, privacy: .public)")
             }
             // Release the service object obtained from IOServiceGetMatchingService
             IOObjectRelease(service)
         } else {
-            logger.error("Failed to get IOPlatformExpertDevice service.")
+            let logMsg = "Failed to get IOPlatformExpertDevice service."
+            logger.error("\(logMsg, privacy: .public)")
         }
 
         // Update internal state (Note: AppleClamshellState is TRUE when CLOSED)

@@ -1,6 +1,6 @@
 import Cocoa
-import MacDeviSwitchKit
 import os.log
+import MacDeviSwitchKit
 
 @main
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -184,9 +184,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// Starts all monitoring components
     private func startMonitoring() {
         // Start the controller (which will start all individual monitors)
-        switchController.startMonitoring()
-
-        writeToLogFile("All monitoring components started")
+        do {
+            try switchController.startMonitoring()
+            writeToLogFile("All monitoring components started")
+        } catch {
+            logger.error("Failed to start monitoring: \(error.localizedDescription)")
+            writeToLogFile("ERROR: Failed to start monitoring: \(error.localizedDescription)")
+            // Optionally show an alert to the user here
+        }
     }
 
     /// Schedules periodic diagnostic runs
@@ -194,10 +199,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Schedule diagnostics to run every hour
         Timer.scheduledTimer(withTimeInterval: 3600, repeats: true) { [weak self] _ in
             self?.writeToLogFile("Running scheduled diagnostics...")
-
-            if let controller = self?.switchController as? SwitchController {
-                controller.diagnoseAudioSwitchingIssues()
-            }
+            self?.logger.info("Scheduled diagnostic run triggered (diagnoseAudioSwitchingIssues removed).")
         }
     }
 
@@ -225,11 +227,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// Runs initial diagnostics to verify the system state
     private func runInitialDiagnostics() {
         writeToLogFile("Running initial diagnostics...")
-
-        // Run diagnostic on startup
-        if let controller = switchController as? SwitchController {
-            controller.diagnoseAudioSwitchingIssues()
-        }
+        logger.info("Initial diagnostic run triggered in DEBUG (diagnoseAudioSwitchingIssues removed).")
+        writeToLogFile("Initial diagnostics complete (DEBUG)")
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {

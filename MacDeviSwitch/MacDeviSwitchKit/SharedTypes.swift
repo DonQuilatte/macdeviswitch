@@ -41,15 +41,3 @@ public struct AudioDeviceInfo: Identifiable, Hashable {
         self.isOutput = isOutput
     }
 }
-
-/// Protocol for audio device switching operations
-public protocol AudioSwitching {
-    /// Set the default input device by UID
-    func setDefaultInputDevice(uid: String) -> Result<Void, AudioSwitcherError>
-
-    /// Set the default input device by device ID
-    func setDefaultInputDevice(deviceID: AudioDeviceID) -> Result<Void, AudioSwitcherError>
-
-    /// Get the default input device ID
-    func getDefaultInputDeviceID() -> Result<AudioDeviceID, AudioSwitcherError>
-}

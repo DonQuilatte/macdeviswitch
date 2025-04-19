@@ -175,18 +175,18 @@ SwiftCompile normal arm64 Compiling\ PreferenceManager.swift /Users/jederlichman
 
 SwiftCompile normal arm64 /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/PreferenceManager.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
     cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
-    
+
 
 SwiftCompile normal arm64 Compiling\ NotificationManager.swift /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/NotificationManager.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
 SwiftCompile normal arm64 /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/NotificationManager.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
     cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
-    
+
 
 SwiftCompile normal arm64 Compiling\ MacDeviSwitchKit.swift /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/MacDeviSwitchKit.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
 
 SwiftCompile normal arm64 /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/MacDeviSwitchKit.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
     cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
-    
+
 
 SwiftEmitModule normal arm64 Emitting\ module\ for\ MacDeviSwitchKit (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
 Failed frontend command:
@@ -194,7 +194,7 @@ Failed frontend command:
 
 EmitSwiftModule normal arm64 (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
     cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
-    
+
 /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/SwitchController.swift:136:17: error: invalid redeclaration of 'evaluateAndSwitch()'
     public func evaluateAndSwitch() throws -> Bool {
                 ^
@@ -227,39 +227,38 @@ SwiftCompile normal arm64 Compiling\ AudioSwitcher.swift /Users/jederlichman/Dev
 
 SwiftCompile normal arm64 /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/AudioSwitcher.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
     cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
-    
+
 
 SwiftCompile normal arm64 Compiling\ DisplayMonitor.swift /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/DisplayMonitor.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
 
 SwiftCompile normal arm64 /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/DisplayMonitor.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
     cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
-    
+
 
 SwiftCompile normal arm64 Compiling\ AudioDeviceMonitor.swift /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/AudioDeviceMonitor.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
 
 SwiftCompile normal arm64 /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/AudioDeviceMonitor.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
     cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
-    
+
 
 SwiftCompile normal arm64 Compiling\ LidStateMonitor.swift /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/LidStateMonitor.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
 
 SwiftCompile normal arm64 /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/LidStateMonitor.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
     cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
-    
+
 
 SwiftCompile normal arm64 Compiling\ SwitchController.swift /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/SwitchController.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
 
 SwiftCompile normal arm64 /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/SwitchController.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
     cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
-    
+
 
 SwiftCompile normal arm64 Compiling\ Protocols.swift /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/Protocols.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
 
 SwiftCompile normal arm64 /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch/MacDeviSwitchKit/Protocols.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
     cd /Users/jederlichman/Development/Projects/macdeviswitch/MacDeviSwitch
-    
+
 
 SwiftDriverJobDiscovery normal arm64 Compiling MacDeviSwitchKit.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
 
 SwiftDriverJobDiscovery normal arm64 Compiling Protocols.swift (in target 'MacDeviSwitchKit' from project 'MacDeviSwitch')
-

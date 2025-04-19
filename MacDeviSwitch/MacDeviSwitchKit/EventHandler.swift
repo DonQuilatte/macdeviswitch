@@ -1,61 +1,56 @@
 import Foundation
 import os.log
 
-/// Protocol defining the requirements for handling system events relevant to audio switching.
-protocol EventHandling {
-    /// Starts handling events from the provided monitors.
-    ///
-    /// - Parameters:
-    ///   - lidMonitor: The monitor for lid state changes.
-    ///   - displayMonitor: The monitor for display connection changes.
-    ///   - onEvent: A closure to be called when a relevant event occurs.
-    func startHandlingEvents(
-        lidMonitor: LidStateMonitoring,
-        displayMonitor: DisplayMonitoring,
-        onEvent: @escaping () -> Void
-    )
-
-    /// Stops handling events.
-    func stopHandlingEvents(
-        lidMonitor: LidStateMonitoring,
-        displayMonitor: DisplayMonitoring
-    )
-}
-
 /// Handles system events (lid state, display connection) and triggers an action.
-class SwitchControllerEventHandler: EventHandling {
+public class SwitchControllerEventHandler: EventHandling {
     private let logger = Logger(subsystem: "via.MacDeviSwitch.kit", category: "SwitchControllerEventHandler")
     private var eventCallback: (() -> Void)?
+    private var lidMonitor: LidStateMonitoring?
+    private var displayMonitor: DisplayMonitoring?
 
-    func startHandlingEvents(
+    public init() {}
+
+    public func startHandlingEvents(
         lidMonitor: LidStateMonitoring,
         displayMonitor: DisplayMonitoring,
         onEvent: @escaping () -> Void
     ) {
         logger.debug("Starting event handling setup.")
         self.eventCallback = onEvent
+        self.lidMonitor = lidMonitor
+        self.displayMonitor = displayMonitor
 
         // Set up lid state change handler
-        lidMonitor.onLidStateChange = { [weak self] isOpen in
+        self.lidMonitor?.onLidStateChange = { [weak self] isOpen in
             self?.logger.info("Lid state changed: \(isOpen ? "Open" : "Closed")")
             self?.eventCallback?()
         }
 
         // Set up display connection change handler
-        displayMonitor.onDisplayConnectionChange = { [weak self] isConnected in
+        self.displayMonitor?.onDisplayConnectionChange = { [weak self] isConnected in
             self?.logger.info("Display connection changed: \(isConnected ? "Connected" : "Disconnected")")
             self?.eventCallback?()
         }
         logger.debug("Event handlers configured for lid and display monitors.")
     }
 
-    func stopHandlingEvents(
-        lidMonitor: LidStateMonitoring,
-        displayMonitor: DisplayMonitoring
+    public func stopHandlingEvents(
+        lidMonitor: LidStateMonitoring, // Parameter from caller
+        displayMonitor: DisplayMonitoring // Parameter from caller
     ) {
         logger.debug("Stopping event handling.")
-        lidMonitor.onLidStateChange = nil
-        displayMonitor.onDisplayConnectionChange = nil
+
+        // Call stop on the actual monitors passed in
+        lidMonitor.stopMonitoring()
+        displayMonitor.stopMonitoring()
+
+        // Clear callbacks on the internally stored references
+        self.lidMonitor?.onLidStateChange = nil
+        self.displayMonitor?.onDisplayConnectionChange = nil
+
+        // Clear internal references
         self.eventCallback = nil
+        self.lidMonitor = nil
+        self.displayMonitor = nil
     }
 }

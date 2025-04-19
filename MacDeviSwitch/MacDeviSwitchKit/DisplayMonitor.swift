@@ -6,7 +6,7 @@ import os.log
 public enum DisplayMonitorError: Error, LocalizedError {
     case registrationFailed
     case displayListQueryFailed(CGError)
-    
+
     public var errorDescription: String? {
         switch self {
         case .registrationFailed:
@@ -23,12 +23,12 @@ public final class DisplayMonitor: DisplayMonitoring {
 
     /// Indicates whether an external display is currently connected.
     public private(set) var isExternalDisplayConnected: Bool = false
-    
+
     /// Callback invoked when the external display connection status changes.
     ///
     /// - Parameter isConnected: `true` if an external display is connected, `false` otherwise.
     public var onDisplayConnectionChange: ((Bool) -> Void)?
-    
+
     // Monitoring state
     private var isMonitoring: Bool = false
 
@@ -43,7 +43,7 @@ public final class DisplayMonitor: DisplayMonitoring {
         logger.debug("Deinitializing DisplayMonitor")
         stopMonitoring()
     }
-    
+
     /// Starts monitoring for display connection changes.
     ///
     /// If monitoring is already active, this method does nothing.
@@ -57,7 +57,7 @@ public final class DisplayMonitor: DisplayMonitoring {
         }
         isMonitoring = true
     }
-    
+
     /// Stops monitoring for display connection changes.
     ///
     /// If monitoring is not active, this method does nothing.
@@ -70,7 +70,8 @@ public final class DisplayMonitor: DisplayMonitoring {
 
     private func registerForDisplayChanges() throws {
         logger.debug("Registering for display reconfiguration notifications.")
-        let error = CGDisplayRegisterReconfigurationCallback(displayReconfigurationCallback, Unmanaged.passUnretained(self).toOpaque())
+        let error = CGDisplayRegisterReconfigurationCallback(displayReconfigurationCallback,
+                                                             Unmanaged.passUnretained(self).toOpaque())
         if error != .success {
             throw DisplayMonitorError.registrationFailed
         }
@@ -78,7 +79,8 @@ public final class DisplayMonitor: DisplayMonitoring {
 
     private func unregisterForDisplayChanges() {
         logger.debug("Unregistering for display reconfiguration notifications.")
-        CGDisplayRemoveReconfigurationCallback(displayReconfigurationCallback, Unmanaged.passUnretained(self).toOpaque())
+        CGDisplayRemoveReconfigurationCallback(displayReconfigurationCallback,
+                                               Unmanaged.passUnretained(self).toOpaque())
     }
 
     fileprivate func updateExternalDisplayStatus() {
@@ -100,7 +102,8 @@ public final class DisplayMonitor: DisplayMonitoring {
         }
 
         // Allocate space and get the list of online display IDs
-        activeDisplays = Array<CGDirectDisplayID>(repeating: kCGNullDirectDisplay, count: Int(onlineDisplays))
+        activeDisplays = [CGDirectDisplayID](repeating: kCGNullDirectDisplay,
+                                              count: Int(onlineDisplays))
         let listError = CGGetOnlineDisplayList(onlineDisplays, &activeDisplays, &onlineDisplays)
         guard listError == .success else {
              logger.error("Failed to get online display list. Error: \(listError.rawValue)")
@@ -130,7 +133,9 @@ public final class DisplayMonitor: DisplayMonitoring {
 }
 
 // C-style callback function
-private func displayReconfigurationCallback(display: CGDirectDisplayID, flags: CGDisplayChangeSummaryFlags, userInfo: UnsafeMutableRawPointer?) {
+private func displayReconfigurationCallback(display: CGDirectDisplayID,
+                                            flags: CGDisplayChangeSummaryFlags,
+                                            userInfo: UnsafeMutableRawPointer?) {
     guard let monitor = userInfo.map({ Unmanaged<DisplayMonitor>.fromOpaque($0).takeUnretainedValue() }) else {
         os_log(.error, "Display reconfiguration callback invoked without valid userInfo.")
         return

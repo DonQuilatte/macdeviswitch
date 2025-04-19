@@ -58,39 +58,77 @@ class PreferenceManagerTests: XCTestCase {
         XCTAssertNil(retrievedUID, "Retrieved UID should be nil if never set.")
     }
 
-    func testRevertOnLidOpen_DefaultValue() {
+    func testRevertToFallbackOnLidOpen_DefaultValue() {
         // Arrange: Defaults registered in init
 
         // Act
-        let defaultValue = preferenceManager.revertOnLidOpen
+        let defaultValue = preferenceManager.revertToFallbackOnLidOpen
 
         // Assert
         // Default is true as per PreferenceManager implementation
-        XCTAssertTrue(defaultValue, "Default value for revertOnLidOpen should be true.")
+        XCTAssertTrue(defaultValue, "Default value for revertToFallbackOnLidOpen should be true.")
     }
 
-    func testRevertOnLidOpen_SetToFalse() {
+    func testRevertToFallbackOnLidOpen_SetToFalse() {
         // Arrange: Default is true
 
         // Act
-        preferenceManager.revertOnLidOpen = false
-        let newValue = preferenceManager.revertOnLidOpen
+        preferenceManager.revertToFallbackOnLidOpen = false
+        let newValue = preferenceManager.revertToFallbackOnLidOpen
 
         // Assert
         XCTAssertFalse(newValue, "Value should be false after setting to false.")
-        XCTAssertFalse(userDefaults.bool(forKey: "revertOnLidOpen"), "UserDefaults should store false.")
+        XCTAssertFalse(userDefaults.bool(forKey: "revertToFallbackOnLidOpen"), "UserDefaults should store false.")
     }
 
-    func testRevertOnLidOpen_SetToTrue() {
+    func testRevertToFallbackOnLidOpen_SetToTrue() {
         // Arrange
-        preferenceManager.revertOnLidOpen = false // Start with false
+        preferenceManager.revertToFallbackOnLidOpen = false // Start with false
 
         // Act
-        preferenceManager.revertOnLidOpen = true
-        let newValue = preferenceManager.revertOnLidOpen
+        preferenceManager.revertToFallbackOnLidOpen = true
+        let newValue = preferenceManager.revertToFallbackOnLidOpen
 
         // Assert
         XCTAssertTrue(newValue, "Value should be true after setting to true.")
-        XCTAssertTrue(userDefaults.bool(forKey: "revertOnLidOpen"), "UserDefaults should store true.")
+        XCTAssertTrue(userDefaults.bool(forKey: "revertToFallbackOnLidOpen"), "UserDefaults should store true.")
+    }
+
+    // MARK: - showNotifications Tests
+
+    func testShowNotifications_DefaultValue() {
+        // Arrange: Defaults registered in init
+
+        // Act
+        let defaultValue = preferenceManager.showNotifications
+
+        // Assert
+        // Default is true as per PreferenceManager implementation
+        XCTAssertTrue(defaultValue, "Default value for showNotifications should be true.")
+    }
+
+    func testShowNotifications_SetToFalse() {
+        // Arrange: Default is true
+
+        // Act
+        preferenceManager.showNotifications = false
+        let newValue = preferenceManager.showNotifications
+
+        // Assert
+        XCTAssertFalse(newValue, "Value should be false after setting to false.")
+        XCTAssertFalse(userDefaults.bool(forKey: "showNotifications"), "UserDefaults should store false.")
+    }
+
+    func testShowNotifications_SetToTrue() {
+        // Arrange
+        preferenceManager.showNotifications = false // Start with false
+
+        // Act
+        preferenceManager.showNotifications = true
+        let newValue = preferenceManager.showNotifications
+
+        // Assert
+        XCTAssertTrue(newValue, "Value should be true after setting to true.")
+        XCTAssertTrue(userDefaults.bool(forKey: "showNotifications"), "UserDefaults should store true.")
     }
 }

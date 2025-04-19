@@ -10,6 +10,7 @@
 		923BCCD02DB26F7B0068ACDF /* MacDeviSwitchKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 923BCCC52DB26F7B0068ACDF /* MacDeviSwitchKit.framework */; };
 		923BCCDA2DB26F7B0068ACDF /* MacDeviSwitchKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 923BCCC52DB26F7B0068ACDF /* MacDeviSwitchKit.framework */; };
 		923BCCDB2DB26F7B0068ACDF /* MacDeviSwitchKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 923BCCC52DB26F7B0068ACDF /* MacDeviSwitchKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		92F53B9C2DB3AA060008401C /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92F53B9B2DB3AA060008401C /* IOKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,7 +78,18 @@
 		923BCCC52DB26F7B0068ACDF /* MacDeviSwitchKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MacDeviSwitchKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		923BCCCF2DB26F7B0068ACDF /* MacDeviSwitchKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacDeviSwitchKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		923BCCF82DB27B110068ACDF /* MacDeviSwitchKitTests */ = {isa = PBXFileReference; lastKnownFileType = folder; path = MacDeviSwitchKitTests; sourceTree = "<group>"; };
+		92F53B9B2DB3AA060008401C /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		92D456972DB3A6DC0015A8A4 /* Exceptions for "MacDeviSwitchKit" folder in "MacDeviSwitchKit" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			platformFiltersByRelativePath = {
+				SharedTypes.swift = (macos, );
+			};
+			target = 923BCCC42DB26F7B0068ACDF /* MacDeviSwitchKit */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		923BCC912DB26EA20068ACDF /* MacDeviSwitch */ = {
@@ -97,6 +109,9 @@
 		};
 		923BCCC62DB26F7B0068ACDF /* MacDeviSwitchKit */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				92D456972DB3A6DC0015A8A4 /* Exceptions for "MacDeviSwitchKit" folder in "MacDeviSwitchKit" target */,
+			);
 			path = MacDeviSwitchKit;
 			sourceTree = "<group>";
 		};
@@ -134,6 +149,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				92F53B9C2DB3AA060008401C /* IOKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -183,6 +199,7 @@
 		923BCCE32DB26FF20068ACDF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				92F53B9B2DB3AA060008401C /* IOKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

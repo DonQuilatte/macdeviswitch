@@ -4,45 +4,8 @@ import os.log
 
 // Forward declare AudioDeviceInfo and AudioSwitching as actual protocol and struct signatures for typechecking
 // Forward declare AudioSwitcherError for protocol typechecking
-public enum AudioSwitcherError: Error, LocalizedError {
-    case deviceNotFound(uid: String)
-    case deviceIDNotFound
-    case switchFailed(deviceID: AudioDeviceID, status: OSStatus)
-    case propertyAccessFailed(selector: AudioObjectPropertySelector, status: OSStatus)
-    public var errorDescription: String? {
-        switch self {
-        case .deviceNotFound(let uid):
-            return "Audio device with UID '\(uid)' not found"
-        case .deviceIDNotFound:
-            return "Could not retrieve default audio device ID"
-        case .switchFailed(let deviceID, let status):
-            return "Failed to set device \(deviceID) as default (Error: \(status))"
-        case .propertyAccessFailed(let selector, let status):
-            return "Failed to access audio property \(selector) (Error: \(status))"
-        }
-    }
-}
 
-public struct AudioDeviceInfo: Identifiable, Hashable {
-    public let id: AudioDeviceID
-    public let uid: String
-    public let name: String
-    public let isInput: Bool
-    public let isOutput: Bool
-    public init(id: AudioDeviceID, uid: String, name: String, isInput: Bool, isOutput: Bool = false) {
-        self.id = id
-        self.uid = uid
-        self.name = name
-        self.isInput = isInput
-        self.isOutput = isOutput
-    }
-}
-
-public protocol AudioSwitching {
-    func setDefaultInputDevice(uid: String) -> Result<Void, AudioSwitcherError>
-    func setDefaultInputDevice(deviceID: AudioDeviceID) -> Result<Void, AudioSwitcherError>
-    func getDefaultInputDeviceID() -> Result<AudioDeviceID, AudioSwitcherError>
-}
+// MARK: - Protocols
 
 /// Protocol for notification management.
 /// Handles user notifications for audio device switching events.
@@ -149,4 +112,59 @@ public protocol SwitchControlling {
     /// Set the notification manager.
     /// - Parameter notificationManager: Manager for user notifications.
     func setNotificationManager(_ notificationManager: NotificationManaging)
+}
+
+/// Protocol for audio switching.
+public protocol AudioSwitching {
+    func setDefaultInputDevice(uid: String) -> Result<Void, AudioSwitcherError>
+    func setDefaultInputDevice(deviceID: AudioDeviceID) -> Result<Void, AudioSwitcherError>
+    func getDefaultInputDeviceID() -> Result<AudioDeviceID, AudioSwitcherError>
+}
+
+// MARK: - Refactored Component Protocols
+
+/// Protocol defining the logic for selecting the target audio device.
+public protocol DeviceSelecting {
+    /// Determines the target device UID based on current system state and preferences.
+    /// - Parameters:
+    ///   - lidIsOpen: Current state of the laptop lid.
+    ///   - isExternalDisplayConnected: Current state of external display connection.
+    ///   - preferences: User preferences for target/fallback devices.
+    ///   - currentDefaultDeviceID: The ID of the currently set default input device.
+    ///   - fallbackDeviceID: The ID of the fallback device stored when switching occurred.
+    /// - Returns: The UID of the device that should be the default input, or nil if no switch is needed.
+    func determineTargetDeviceUID(
+        lidIsOpen: Bool,
+        isExternalDisplayConnected: Bool,
+        preferences: PreferenceManaging,
+        currentDefaultDeviceID: AudioDeviceID?,
+        fallbackDeviceID: AudioDeviceID?
+    ) -> String?
+}
+
+/// Protocol defining the handling of system events (lid, display) to trigger evaluations.
+public protocol EventHandling {
+    /// Starts handling relevant system events.
+    /// - Parameters:
+    ///   - lidMonitor: The monitor for lid state changes.
+    ///   - displayMonitor: The monitor for display connection changes.
+    ///   - onEvent: A closure to be called when a relevant event occurs.
+    func startHandlingEvents(
+        lidMonitor: LidStateMonitoring,
+        displayMonitor: DisplayMonitoring,
+        onEvent: @escaping () -> Void
+    )
+
+    /// Stops handling system events.
+    /// - Parameters:
+    ///   - lidMonitor: The lid monitor to stop observing.
+    ///   - displayMonitor: The display monitor to stop observing.
+    func stopHandlingEvents(lidMonitor: LidStateMonitoring, displayMonitor: DisplayMonitoring)
+}
+
+// MARK: - Notification Names
+
+public extension Notification.Name {
+    /// Posted when the list of available audio devices changes.
+    static let AudioDevicesChangedNotification = Notification.Name("AudioDevicesChangedNotification")
 }

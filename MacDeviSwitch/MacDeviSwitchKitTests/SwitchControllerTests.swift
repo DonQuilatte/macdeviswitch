@@ -54,8 +54,8 @@ class SwitchControllerTests: XCTestCase {
         // Add both mics to the monitor
         mockAudioDeviceMonitor.addDevice(id: internalMicID, uid: internalMicUID, name: internalMicName)
         mockAudioDeviceMonitor.addDevice(id: externalMicID, uid: externalMicUID, name: externalMicName)
-        // Set initial default device in the switcher
-        mockAudioSwitcher.getDefaultInputDeviceIDReturnValue = internalMicID
+        // Set initial default device in the switcher using the new helper
+        mockAudioSwitcher.setCurrentDefaultDeviceID(internalMicID)
         // Set target device in preferences
         mockPreferences.targetMicrophoneUID = externalMicUID
     }
@@ -79,11 +79,12 @@ class SwitchControllerTests: XCTestCase {
         // Arrange
         mockLidMonitor.isLidOpen = false
         mockDisplayMonitor.isExternalDisplayConnected = true
-        mockAudioSwitcher.getDefaultInputDeviceIDReturnValue = internalMicID // Start on internal
+        mockAudioSwitcher.setCurrentDefaultDeviceID(internalMicID) // Start on internal
         mockPreferences.targetMicrophoneUID = externalMicUID
+        mockDeviceSelector.stubbedTargetUID = externalMicUID // Selector should return target
 
         // Act
-        switchController.evaluateAndSwitch() // Access internal method for testing
+        XCTAssertNoThrow(try switchController.evaluateAndSwitch()) // Access internal method for testing
 
         // Assert
         XCTAssertEqual(mockAudioSwitcher.setDefaultInputDeviceIDCalledWith, externalMicID,
@@ -95,12 +96,15 @@ class SwitchControllerTests: XCTestCase {
         // Arrange
         mockLidMonitor.isLidOpen = false
         mockDisplayMonitor.isExternalDisplayConnected = true
-        mockAudioSwitcher.getDefaultInputDeviceIDReturnValue = externalMicID // Start on external (target)
+        // Start on external (target) - use helper
+        mockAudioSwitcher.setCurrentDefaultDeviceID(externalMicID)
         mockPreferences.targetMicrophoneUID = externalMicUID
+        // Selector *would* return target, but controller should see current == target
+        mockDeviceSelector.stubbedTargetUID = externalMicUID
         mockAudioSwitcher.resetMockState() // Reset call trackers
 
         // Act
-        switchController.evaluateAndSwitch()
+        XCTAssertNoThrow(try switchController.evaluateAndSwitch())
 
         // Assert
         XCTAssertNil(mockAudioSwitcher.setDefaultInputDeviceIDCalledWith,
@@ -111,12 +115,15 @@ class SwitchControllerTests: XCTestCase {
         // Arrange
         mockLidMonitor.isLidOpen = false
         mockDisplayMonitor.isExternalDisplayConnected = false // No external display
-        mockAudioSwitcher.getDefaultInputDeviceIDReturnValue = internalMicID
+        // Start on internal
+        mockAudioSwitcher.setCurrentDefaultDeviceID(internalMicID)
         mockPreferences.targetMicrophoneUID = externalMicUID
+        // Selector should determine no switch needed due to display state
+        mockDeviceSelector.stubbedTargetUID = nil
         mockAudioSwitcher.resetMockState()
 
         // Act
-        switchController.evaluateAndSwitch()
+        XCTAssertNoThrow(try switchController.evaluateAndSwitch())
 
         // Assert
         XCTAssertNil(mockAudioSwitcher.setDefaultInputDeviceIDCalledWith,
@@ -127,55 +134,68 @@ class SwitchControllerTests: XCTestCase {
         // Arrange
         mockLidMonitor.isLidOpen = false
         mockDisplayMonitor.isExternalDisplayConnected = true
-        mockAudioSwitcher.getDefaultInputDeviceIDReturnValue = internalMicID
+        // Start on internal
+        mockAudioSwitcher.setCurrentDefaultDeviceID(internalMicID)
         mockPreferences.targetMicrophoneUID = nil // No target set
+        // Selector should determine no switch needed due to missing preference
+        mockDeviceSelector.stubbedTargetUID = nil
         mockAudioSwitcher.resetMockState()
 
         // Act
-        switchController.evaluateAndSwitch()
+        XCTAssertNoThrow(try switchController.evaluateAndSwitch())
 
         // Assert
         XCTAssertNil(mockAudioSwitcher.setDefaultInputDeviceIDCalledWith,
                      "Should NOT switch if no target microphone is set.")
     }
 
-     func testEvaluateAndSwitch_WhenLidCloses_WithExtDisplay_TargetNotAvailable_ShouldNotSwitch() {
+    func testEvaluateAndSwitch_WhenLidCloses_WithExtDisplay_TargetNotAvailable_ShouldNotSwitch() {
         // Arrange
         mockLidMonitor.isLidOpen = false
         mockDisplayMonitor.isExternalDisplayConnected = true
-        mockAudioSwitcher.getDefaultInputDeviceIDReturnValue = internalMicID
+        // Start on internal
+        mockAudioSwitcher.setCurrentDefaultDeviceID(internalMicID)
         mockPreferences.targetMicrophoneUID = "NonExistentMic_UID" // Target not in available list
+        // Controller should find the UID from selector, but fail to find the ID
+        mockDeviceSelector.stubbedTargetUID = "NonExistentMic_UID"
         mockAudioSwitcher.resetMockState()
 
         // Act
-        switchController.evaluateAndSwitch()
+        // Expect error because the UID from selector won't map to an ID in AudioDeviceMonitor
+        XCTAssertThrowsError(try switchController.evaluateAndSwitch()) { error in
+            guard case SwitchControllerError.deviceNotFound(let uid) = error else {
+                return XCTFail("Expected deviceNotFound error")
+            }
+            XCTAssertEqual(uid, "NonExistentMic_UID")
+        }
 
-        // Assert
-        XCTAssertNil(mockAudioSwitcher.setDefaultInputDeviceIDCalledWith,
-                     "Should NOT switch if target microphone is not available.")
+        // Assert switch wasn't called (already checked by throw)
+        XCTAssertNil(mockAudioSwitcher.setDefaultInputDeviceIDCalledWith, "Switch should not have been attempted")
     }
 
     // MARK: - Test Cases: Lid Open (Exiting Clamshell) - PRD 4.1.3
 
     func testEvaluateAndSwitch_WhenLidOpens_CurrentIsTarget_RevertPrefTrue_ShouldRevertToFallback() {
-        // Arrange
         // 1. Simulate a previous switch: Lid closed, ext display, switched to external
         mockLidMonitor.isLidOpen = false
         mockDisplayMonitor.isExternalDisplayConnected = true
-        mockAudioSwitcher.getDefaultInputDeviceIDReturnValue = internalMicID
+        mockAudioSwitcher.setCurrentDefaultDeviceID(internalMicID)
         mockPreferences.targetMicrophoneUID = externalMicUID
-        switchController.evaluateAndSwitch() // This sets the fallback internally
+        mockDeviceSelector.stubbedTargetUID = externalMicUID // Selector triggers initial switch
+        XCTAssertNoThrow(try switchController.evaluateAndSwitch()) // This sets the fallback internally
         XCTAssertEqual(mockAudioSwitcher.setDefaultInputDeviceIDCalledWith, externalMicID) // Verify switch happened
+        // Verify internal state of mock switcher was updated
+        XCTAssertEqual(try? mockAudioSwitcher.getDefaultInputDeviceID().get(), externalMicID)
         mockAudioSwitcher.resetMockState() // Reset call trackers
 
         // 2. Now, open the lid
         mockLidMonitor.isLidOpen = true
-        mockPreferences.revertOnLidOpen = true // Ensure revert is enabled
-        // Current device is now externalMicID as set by the mock switcher
-        XCTAssertEqual(mockAudioSwitcher.getDefaultInputDeviceID(), externalMicID)
+        mockPreferences.revertToFallbackOnLidOpen = true // Ensure revert is enabled
+        // Selector should now return the fallback UID to trigger revert
+        mockDeviceSelector.stubbedTargetUID = internalMicUID
 
         // Act
-        switchController.evaluateAndSwitch()
+        XCTAssertNoThrow(try switchController.evaluateAndSwitch())
 
         // Assert
         XCTAssertEqual(mockAudioSwitcher.setDefaultInputDeviceIDCalledWith, internalMicID,
@@ -184,23 +204,25 @@ class SwitchControllerTests: XCTestCase {
     }
 
     func testEvaluateAndSwitch_WhenLidOpens_CurrentIsTarget_RevertPrefFalse_ShouldNotRevert() {
-        // Arrange
         // 1. Simulate previous switch
         mockLidMonitor.isLidOpen = false
         mockDisplayMonitor.isExternalDisplayConnected = true
-        mockAudioSwitcher.getDefaultInputDeviceIDReturnValue = internalMicID
+        mockAudioSwitcher.setCurrentDefaultDeviceID(internalMicID)
         mockPreferences.targetMicrophoneUID = externalMicUID
-        switchController.evaluateAndSwitch() // Sets fallback
+        mockDeviceSelector.stubbedTargetUID = externalMicUID // Selector triggers initial switch
+        XCTAssertNoThrow(try switchController.evaluateAndSwitch()) // Sets fallback
         XCTAssertEqual(mockAudioSwitcher.setDefaultInputDeviceIDCalledWith, externalMicID)
+        XCTAssertEqual(try? mockAudioSwitcher.getDefaultInputDeviceID().get(), externalMicID)
         mockAudioSwitcher.resetMockState()
 
         // 2. Open lid, but disable revert
         mockLidMonitor.isLidOpen = true
-        mockPreferences.revertOnLidOpen = false // Revert DISABLED
-        XCTAssertEqual(mockAudioSwitcher.getDefaultInputDeviceID(), externalMicID)
+        mockPreferences.revertToFallbackOnLidOpen = false // Revert DISABLED
+        // Selector should determine no switch needed
+        mockDeviceSelector.stubbedTargetUID = nil
 
         // Act
-        switchController.evaluateAndSwitch()
+        XCTAssertNoThrow(try switchController.evaluateAndSwitch())
 
         // Assert
         XCTAssertNil(mockAudioSwitcher.setDefaultInputDeviceIDCalledWith,
@@ -208,23 +230,27 @@ class SwitchControllerTests: XCTestCase {
     }
 
     func testEvaluateAndSwitch_WhenLidOpens_CurrentNotTarget_ShouldNotRevert() {
-         // Arrange
         // 1. Simulate previous switch
         mockLidMonitor.isLidOpen = false
         mockDisplayMonitor.isExternalDisplayConnected = true
-        mockAudioSwitcher.getDefaultInputDeviceIDReturnValue = internalMicID
+        mockAudioSwitcher.setCurrentDefaultDeviceID(internalMicID) // Start internal
         mockPreferences.targetMicrophoneUID = externalMicUID
-        switchController.evaluateAndSwitch() // Sets fallback
+        mockDeviceSelector.stubbedTargetUID = externalMicUID // Selector triggers initial switch
+        XCTAssertNoThrow(try switchController.evaluateAndSwitch()) // Sets fallback, switches to external
         XCTAssertEqual(mockAudioSwitcher.setDefaultInputDeviceIDCalledWith, externalMicID)
+        XCTAssertEqual(try? mockAudioSwitcher.getDefaultInputDeviceID().get(), externalMicID)
         mockAudioSwitcher.resetMockState()
 
-        // 2. Open lid, enable revert, BUT simulate user manually changed mic *after* lid closed
+        // 2. Open lid, but assume current device is *not* the target anymore (manually changed?)
         mockLidMonitor.isLidOpen = true
-        mockPreferences.revertOnLidOpen = true
-        mockAudioSwitcher.getDefaultInputDeviceIDReturnValue = internalMicID // Manually set back to internal
+        let someOtherDeviceID: AudioDeviceID = 999
+        mockAudioSwitcher.setCurrentDefaultDeviceID(someOtherDeviceID)
+        mockPreferences.revertToFallbackOnLidOpen = true // Revert enabled (but shouldn't trigger)
+        // Selector should determine no switch needed as current device isn't the target
+        mockDeviceSelector.stubbedTargetUID = nil
 
         // Act
-        switchController.evaluateAndSwitch()
+        XCTAssertNoThrow(try switchController.evaluateAndSwitch())
 
         // Assert
         XCTAssertNil(mockAudioSwitcher.setDefaultInputDeviceIDCalledWith,
@@ -232,28 +258,11 @@ class SwitchControllerTests: XCTestCase {
     }
 
     // Add tests for scenarios where switch fails (mockAudioSwitcher.setDefaultInputDeviceShouldSucceed = false)
-    // Add tests for scenarios where getting current default device fails (mockAudioSwitcher.getDefaultInputDeviceIDReturnValue = nil)
+    // Add tests for scenarios where getting current default device fails (mockAudioSwitcher.getDefaultInputDeviceIDResult = .failure())
 }
 
 // MARK: - Mock Dependencies
 
 // (Existing mocks for LidStateMonitor, DisplayMonitor, etc.)
 
-// Mock for DeviceSelecting protocol (Optional, can use real DefaultDeviceSelector too)
-class MockDeviceSelector: DeviceSelecting {
-    var determineTargetDeviceUIDCalled = false
-    var determineTargetDeviceUIDReturnValue: String?
-
-    func determineTargetDeviceUID(lidIsOpen: Bool, isExternalDisplayConnected: Bool, preferences: PreferenceManaging) -> String? {
-        determineTargetDeviceUIDCalled = true
-        // Return a predetermined value or implement simple logic for testing
-        // For simplicity, just return the stubbed value.
-        return determineTargetDeviceUIDReturnValue
-    }
-}
-
 // Extend the existing MockMacDeviSwitchKitComponents.swift if that's where mocks live
-
-class MockLidStateMonitor: LidStateMonitoring {
-    // ... (Existing mock implementation)
-}
