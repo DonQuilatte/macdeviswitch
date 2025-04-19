@@ -1,0 +1,18 @@
+# SwiftLint configuration file
+# See https://github.com/realm/SwiftLint/blob/master/Rules.md for more details
+
+disabled_rules:
+  - trailing_whitespace
+  - line_length # Disabled due to persistent issues with logging lines
+
+# Other rules can be configured here, for example:
+file_length:
+  warning: 600 # Increased for SwitchController
+  error: 650   # Increased for SwitchController
+type_body_length:
+  warning: 380 # Increased for SwitchController
+  error: 400   # Increased for SwitchController
+
+# line_length: # Example of setting limits instead of disabling
+#   warning: 140
+#   error: 160

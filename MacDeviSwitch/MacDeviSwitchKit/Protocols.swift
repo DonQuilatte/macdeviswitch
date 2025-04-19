@@ -63,15 +63,15 @@ public protocol NotificationManaging {
 public protocol LidStateMonitoring {
     /// Current lid state (true if open, false if closed).
     var isLidOpen: Bool { get }
-    
+
     /// Callback triggered when lid state changes.
     /// - Parameter: Boolean indicating if lid is open (true) or closed (false).
     var onLidStateChange: ((Bool) -> Void)? { get set }
-    
+
     /// Start monitoring lid state changes.
     /// - Throws: LidStateMonitorError if monitoring cannot be started.
     func startMonitoring() throws
-    
+
     /// Stop monitoring lid state changes.
     func stopMonitoring()
 }
@@ -83,14 +83,14 @@ public protocol LidStateMonitoring {
 public protocol DisplayMonitoring {
     /// Current external display connection state.
     var isExternalDisplayConnected: Bool { get }
-    
+
     /// Callback triggered when display connection changes.
     /// - Parameter: Boolean indicating if external display is connected.
     var onDisplayConnectionChange: ((Bool) -> Void)? { get set }
-    
+
     /// Start monitoring display connection changes.
     func startMonitoring()
-    
+
     /// Stop monitoring display connection changes.
     func stopMonitoring()
 }
@@ -102,10 +102,10 @@ public protocol DisplayMonitoring {
 public protocol AudioDeviceMonitoring {
     /// List of currently available audio input devices.
     var availableInputDevices: [AudioDeviceInfo] { get }
-    
+
     /// Start monitoring audio device changes.
     func startMonitoring()
-    
+
     /// Stop monitoring audio device changes.
     func stopMonitoring()
 }
@@ -117,10 +117,10 @@ public protocol AudioDeviceMonitoring {
 public protocol PreferenceManaging {
     /// The UID of the target microphone to switch to.
     var targetMicrophoneUID: String? { get set }
-    
+
     /// Whether to revert to the fallback microphone on lid open.
     var revertToFallbackOnLidOpen: Bool { get set }
-    
+
     /// Whether to show notifications for audio device switching events.
     var showNotifications: Bool { get set }
 }
@@ -133,19 +133,19 @@ public protocol SwitchControlling {
     /// Start the controller and perform initial evaluation.
     /// - Throws: SwitchControllerError if an error occurs during startup.
     func start() throws
-    
+
     /// Evaluate current conditions and switch audio devices if necessary.
     /// - Returns: Boolean indicating if a switch occurred.
     /// - Throws: SwitchControllerError if an error occurs during evaluation and switching.
     func evaluateAndSwitch() throws -> Bool
-    
+
     /// Start monitoring all relevant state changes.
     /// - Throws: SwitchControllerError if an error occurs during monitoring.
     func startMonitoring() throws
-    
+
     /// Stop monitoring all state changes.
     func stopMonitoring()
-    
+
     /// Set the notification manager.
     /// - Parameter notificationManager: Manager for user notifications.
     func setNotificationManager(_ notificationManager: NotificationManaging)
