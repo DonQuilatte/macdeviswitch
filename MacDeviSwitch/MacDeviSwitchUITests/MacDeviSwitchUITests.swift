@@ -27,8 +27,11 @@ final class MacDeviSwitchUITests: XCTestCase {
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
         app.launch()
-
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        // Verify the app is running in the foreground
+        XCTAssertTrue(
+            app.wait(for: .runningForeground, timeout: 5),
+            "App did not launch to foreground"
+        )
     }
 
     @MainActor
