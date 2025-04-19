@@ -1,5 +1,4 @@
-import AppKit
-import SwiftUI
+import Cocoa
 import os.log
 import MacDeviSwitchKit
 import UserNotifications
@@ -274,9 +273,10 @@ class StatusBarController {
             content: content,
             trigger: UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
         )
-        UNUserNotificationCenter.current().add(request) { error in
+        UNUserNotificationCenter.current().add(request) { [weak self] error in
             if let error = error {
-                logger.error("Notification error: \(error.localizedDescription)")
+                // Log notification errors
+                self?.logger.error("Notification error: \(error.localizedDescription)")
             }
         }
     }

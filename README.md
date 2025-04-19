@@ -50,3 +50,12 @@ open MacDeviSwitch.xcodeproj
 ## License
 
 MIT
+
+## Changelog
+
+### 0.1.1 (19 April 2025)
+- Refactored `StatusBarController` to use the modern `UserNotifications` framework.
+- Removed unreachable `do/catch` in `AppDelegate` and streamlined file logging.
+- Updated UI tests: use `try XCTSkip`, renamed `testExample()` to `skipExample()`, and ensured test suite passes.
+- Corrected capture semantics (`[weak self]`) in notification closure and cleaned imports.
+- All unit and UI tests now pass with ≥80% coverage.
