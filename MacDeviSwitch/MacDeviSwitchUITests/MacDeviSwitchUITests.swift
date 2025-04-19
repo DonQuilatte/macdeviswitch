@@ -27,6 +27,12 @@ final class MacDeviSwitchUITests: XCTestCase {
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
         app.launch()
+        // Assert the app is in the foreground
+        XCTAssertEqual(
+            app.state,
+            .runningForeground,
+            "App did not remain in the foreground after launch"
+        )
     }
 
     @MainActor
