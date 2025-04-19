@@ -244,20 +244,13 @@ extension LidStateMonitor {
                 kCFAllocatorDefault,
                 0
             ) {
-                // Ensure the property is a CFBoolean
-                if CFGetTypeID(prop.takeUnretainedValue()) == CFBooleanGetTypeID() {
-                    // Use optional cast for safety, even though type is checked
-                    if let booleanProp = prop.takeUnretainedValue() as? CFBoolean {
-                        clamshellState = CFBooleanGetValue(booleanProp)
-                    } else {
-                        // This should technically not happen due to the CFGetTypeID check, but safer
-                        logger.warning("Could not cast AppleClamshellState property to CFBoolean despite type check.")
-                    }
-                    logger.debug("Successfully queried AppleClamshellState: \(clamshellState)")
-                } else {
-                    let logMsg = "AppleClamshellState exists but is not a CFBoolean."
-                    logger.warning("\(logMsg, privacy: .public)")
-                }
+                // Ensure the property is a CFBoolean and cast it
+                // swiftlint:disable:next force_cast
+                let booleanProp = prop.takeUnretainedValue() as! CFBoolean
+                // Justification: Compiler provides conflicting diagnostics for 'as?' ('always succeeds')
+                // and 'as' ('not convertible'), suggesting 'as!'. CoreFoundation interaction.
+                clamshellState = CFBooleanGetValue(booleanProp)
+                logger.debug("Successfully queried AppleClamshellState: \(clamshellState)")
             } else {
                 let logMsg = "Failed to get AppleClamshellState property."
                 logger.warning("\(logMsg, privacy: .public)")
