@@ -23,20 +23,6 @@ final class MacDeviSwitchUITests: XCTestCase {
     }
 
     @MainActor
-    func testExample() throws {
-        try XCTSkip("Skipping default UI testExample on macOS")
-        // UI tests must launch the application that they test.
-        let app = XCUIApplication()
-        app.launch()
-        // Assert the app is in the foreground
-        XCTAssertEqual(
-            app.state,
-            .runningForeground,
-            "App did not remain in the foreground after launch"
-        )
-    }
-
-    @MainActor
     func testLaunchPerformance() throws {
         // This measures how long it takes to launch your application.
         measure(metrics: [XCTApplicationLaunchMetric()]) {
