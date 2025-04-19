@@ -24,6 +24,7 @@ final class MacDeviSwitchUITests: XCTestCase {
 
     @MainActor
     func testExample() throws {
+        try XCTSkip("Skipping default UI testExample on macOS")
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
         app.launch()
