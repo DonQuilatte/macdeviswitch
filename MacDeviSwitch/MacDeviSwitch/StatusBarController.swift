@@ -2,6 +2,7 @@ import AppKit
 import SwiftUI
 import os.log
 import MacDeviSwitchKit
+import UserNotifications
 
 class StatusBarController {
     private var statusItem: NSStatusItem!
@@ -210,7 +211,7 @@ class StatusBarController {
         logger.info("Diagnostic info requested.")
 
         // Run diagnostic if SwitchController is available
-        if let switchController = switchController {
+        if switchController != nil {
             // switchController.diagnoseAudioSwitchingIssues() // Method removed or renamed
             logger.info("Diagnostic information has been printed to the console")
         }
@@ -264,10 +265,20 @@ class StatusBarController {
 
     // Helper to display notifications
     private func showNotification(title: String, body: String) {
-        let notification = NSUserNotification()
-        notification.title = title
-        notification.informativeText = body
-        NSUserNotificationCenter.default.deliver(notification)
+        // Use UserNotifications framework for local notifications
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = body
+        let request = UNNotificationRequest(
+            identifier: UUID().uuidString,
+            content: content,
+            trigger: UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        )
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                logger.error("Notification error: \(error.localizedDescription)")
+            }
+        }
     }
 
     // Clean up observer if using NotificationCenter

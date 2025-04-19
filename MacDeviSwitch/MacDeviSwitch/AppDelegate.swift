@@ -208,20 +208,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private func writeToLogFile(_ message: String) {
         guard let url = logFileURL else { return }
 
-        do {
-            let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .medium)
-            let logMessage = "[\(timestamp)] \(message)\n"
-
-            if let fileHandle = try? FileHandle(forWritingTo: url) {
-                fileHandle.seekToEndOfFile()
-                if let data = logMessage.data(using: .utf8) {
-                    fileHandle.write(data)
-                }
-                fileHandle.closeFile()
-            }
-        } catch {
-            logger.error("Failed to write to log file: \(error.localizedDescription)")
+        let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .medium)
+        let logMessage = "[\(timestamp)] \(message)\n"
+        guard let fileHandle = try? FileHandle(forWritingTo: url) else {
+            logger.error("Failed to open log file for writing at \(url.path)")
+            return
         }
+        fileHandle.seekToEndOfFile()
+        if let data = logMessage.data(using: .utf8) {
+            fileHandle.write(data)
+        }
+        fileHandle.closeFile()
     }
 
     /// Runs initial diagnostics to verify the system state
