@@ -40,3 +40,7 @@ Rome/
 *.secret
 credentials.*
 *.env
+
+# Misc
+.snapshots/
+build-test.log

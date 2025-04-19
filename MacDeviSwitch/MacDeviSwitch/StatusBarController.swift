@@ -211,7 +211,7 @@ class StatusBarController {
 
         // Run diagnostic if SwitchController is available
         if switchController != nil {
-            // switchController.diagnoseAudioSwitchingIssues() // Method removed or renamed
+            // Diagnostic API removed
             logger.info("Diagnostic information has been printed to the console")
         }
 
