@@ -1,0 +1,82 @@
+# /CI/swift-ci.yml
+name: Swift CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build_and_test:
+    name: Build, Test & Analyze (macOS)
+    runs-on: macos-latest # Consider specifying an Xcode version if needed, e.g., macos-13
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # Cache Swift PM dependencies (Optional but recommended)
+    # - name: Cache Swift PM dependencies
+    #   uses: actions/cache@v3
+    #   with:
+    #     path: .build
+    #     key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+    #     restore-keys: |
+    #       ${{ runner.os }}-spm-
+
+    - name: Select Xcode Version (Adjust if necessary)
+      run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer # Or specific Xcode path if multiple installed
+
+    - name: Install SwiftLint (if not using Mint or other package manager)
+      run: |
+        if ! command -v swiftlint &> /dev/null
+        then
+          echo "SwiftLint not found, installing via Homebrew..."
+          brew install swiftlint
+        else
+          echo "SwiftLint found at $(which swiftlint)"
+          swiftlint --version
+        fi
+
+    - name: Run SwiftLint
+      run: swiftlint --strict --config .swiftlint.yml # Assuming config is in root, adjust if needed
+
+    # --- Adjust Scheme Name If Necessary ---
+    - name: Build and Test (with Coverage)
+      run: |
+        set -o pipefail && xcodebuild build test \
+          -project MacDeviSwitch/MacDeviSwitch.xcodeproj \
+          -scheme MacDeviSwitch \
+          -destination 'platform=macOS,arch=arm64,arch=x86_64' \
+          -enableCodeCoverage YES \
+          -resultBundlePath ./TestResults.xcresult | xcpretty
+      env:
+         NSUnbufferedIO: YES # Ensure immediate output for xcpretty
+
+    # --- Adjust Scheme Name If Necessary ---
+    - name: Run Static Analysis
+      run: |
+         set -o pipefail && xcodebuild analyze \
+           -project MacDeviSwitch/MacDeviSwitch.xcodeproj \
+           -scheme MacDeviSwitch \
+           -destination 'platform=macOS,arch=arm64,arch=x86_64' | xcpretty
+      env:
+         NSUnbufferedIO: YES # Ensure immediate output for xcpretty
+
+    # --- Optional: Upload Test Results ---
+    # - name: Upload Test Results
+    #   if: always() # Run even if previous steps fail
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: TestResults
+    #     path: ./TestResults.xcresult
+
+    # --- Optional: Process and Upload Code Coverage (Requires additional tools like xcov or slather) ---
+    # - name: Generate Code Coverage Report
+    #   run: # Add commands to process xcresult and generate coverage report (e.g., using xcov)
+    # - name: Upload Code Coverage Report
+    #   uses: codecov/codecov-action@v3 # Example using Codecov
+    #   with:
+    #     files: ./coverage/cobertura.xml # Adjust path based on generation tool
+    #     token: ${{ secrets.CODECOV_TOKEN }} # Requires setting up Codecov and adding a secret

@@ -1,0 +1,21 @@
+# .pre-commit-config.yaml
+repos:
+-   repo: https://github.com/realm/SwiftLint # Use the official SwiftLint repo
+    rev: 0.54.0 # Specify a recent, stable SwiftLint version tag
+    hooks:
+    -   id: swiftlint
+        name: SwiftLint (Strict)
+        args: ["--strict", "--config", ".swiftlint.yml"] # Assumes .swiftlint.yml in root
+        # Optional: Specify file types if needed, default is usually good
+        # types: [swift]
+        # Optional: Exclude paths if necessary
+        # exclude: path/to/exclude
+
+# Add other useful pre-commit hooks
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0 # Use a recent version
+    hooks:
+    -   id: check-yaml
+    -   id: end-of-file-fixer
+    -   id: trailing-whitespace
+    # -   id: check-added-large-files # Consider adding this
